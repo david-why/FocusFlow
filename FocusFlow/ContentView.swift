@@ -6,19 +6,25 @@
 //
 
 import SwiftUI
+import SwiftData
+
+enum ContentTab {
+    case home
+}
 
 struct ContentView: View {
+    @State var tab: ContentTab = .home
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView(selection: $tab) {
+            Tab(value: ContentTab.home) {
+                HomeScreen()
+            }
         }
-        .padding()
     }
 }
 
 #Preview {
     ContentView()
+        .modelContainer(for: FocusSession.self)
 }
