@@ -11,6 +11,8 @@ import SwiftData
 struct SessionsScreen: View {
     @Query(sort: \FocusSession.startDate, order: .reverse) var sessions: [FocusSession]
     
+    @Environment(\.modelContext) var modelContext
+    
     var body: some View {
         NavigationStack {
             List {
@@ -19,6 +21,7 @@ struct SessionsScreen: View {
                         SessionSummary(session: session)
                     }
                 }
+                .onDelete(perform: deleteIndices)
                 if sessions.isEmpty {
                     Text("When you focus, \(coinText) flows!")
                 }
@@ -30,7 +33,10 @@ struct SessionsScreen: View {
         }
     }
     
-    // MARK: - Detail view
+    func deleteIndices(_ indices: IndexSet) {
+        let deletedSessions = indices.map { sessions[$0] }
+        deletedSessions.forEach(modelContext.delete)
+    }
 }
 
 struct SessionDetailView: View {
