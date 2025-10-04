@@ -1,0 +1,71 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@ %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$lld"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "FocusFlow" : {
+
+    },
+    "Home" : {
+
+    },
+    "Last session" : {
+
+    },
+    "Sessions" : {
+
+    },
+    "Sessions view" : {
+
+    },
+    "When you focus, %@ flows!" : {
+
+    },
+    "You did it!" : {
+
+    },
+    "You focused for %@! Enjoy your reward of %lld coins!" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You focused for %1$@! Enjoy your reward of %2$lld coin!"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "You focused for %1$@! Enjoy your reward of %2$lld coins!"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

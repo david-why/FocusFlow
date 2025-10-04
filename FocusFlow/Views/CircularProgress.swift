@@ -21,7 +21,7 @@ struct CircularProgress: View {
                 .trim(from: 0, to: percentage)
                 .stroke(style: .init(lineWidth: 8, lineCap: .round, lineJoin: .round))
                 .rotationEffect(.degrees(270))
-                .animation(.linear, value: percentage)
+                .animation(.linear(duration: 1), value: percentage)
         }
     }
 }

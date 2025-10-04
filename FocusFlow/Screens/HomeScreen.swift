@@ -7,8 +7,11 @@
 
 import SwiftUI
 import SwiftData
+import Combine
 
 struct HomeScreen: View {
+    @Environment(\.modelContext) var modelContext
+    
     var body: some View {
         Color.clear
             .frame(height: 20)
@@ -30,15 +33,41 @@ struct HomeScreen: View {
         }
         .padding(.horizontal)
         Spacer()
+            .onReceive(timer, perform: onTimerTick)
+            .alert("You did it!", isPresented: $isPresentingCongrats) {} message: {
+                Text("You focused for \(timerSetting.formatted(.timeInterval.allowedUnits(.minute).unitsStyle(.full)))! Enjoy your reward of \(lastCoinGain) coins!")
+            }
     }
     
     @AppStorage("coins") var coins: Int = 0
     
+    @State var lastCoinGain = 0
+    @State var isPresentingCongrats = false
+    
     // MARK: - Timer state
     
-    @State var timerRunning = false
-    @State var timerSetting = TimeInterval(1800)
-    @State var timerCurrent = TimeInterval(0) // increases to timerSetting as timer ticks
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    @State var now = Date.now
+    
+    @State var timerSetting = TimeInterval(5) // TODO: change me back to 1800
+    @State var timerStartDate: Date? = nil
+    
+    var timerRunning: Bool {
+        timerStartDate != nil
+    }
+    
+    var timerEndDate: Date? {
+        timerStartDate?.addingTimeInterval(timerSetting)
+    }
+    
+    var timerCurrent: TimeInterval {
+        if let timerStartDate {
+            return now.timeIntervalSince(timerStartDate)
+        } else {
+            return 0
+        }
+    }
     
     // MARK: - Progress circle
     
@@ -67,7 +96,7 @@ struct HomeScreen: View {
     }
     
     var progressPercentage: Double {
-        timerRunning ? timerCurrent / timerSetting : 1.0
+        timerRunning ? 1 - timerCurrent / timerSetting : 1.0
     }
     
     var progressText: String {
@@ -80,7 +109,7 @@ struct HomeScreen: View {
     }
     
     var progressAlarmTime: String {
-        (Date.now.addingTimeInterval(timerSetting)).formatted(date: .omitted, time: .shortened)
+        ((timerStartDate ?? now).addingTimeInterval(timerSetting)).formatted(date: .omitted, time: .shortened)
     }
     
     // MARK: - Action buttons
@@ -89,13 +118,14 @@ struct HomeScreen: View {
     
     @ViewBuilder var buttonsView: some View {
         HStack {
-            actionButton(systemImage: "minus") {}
+            actionButton(systemImage: "minus", action: decreaseTimer)
             Spacer()
-            actionButton(systemImage: "play", style: .borderedProminent) {}
+            actionButton(systemImage: timerRunning ? "stop" : "play", style: .borderedProminent, action: startTimer)
             Spacer()
-            actionButton(systemImage: "plus") {}
+            actionButton(systemImage: "plus", action: increaseTimer)
         }
         .frame(maxWidth: 300)
+        .disabled(timerRunning)
     }
     
     func actionButton(systemImage: String, style: some PrimitiveButtonStyle = .bordered, action: @escaping @MainActor () -> Void) -> some View {
@@ -116,17 +146,17 @@ struct HomeScreen: View {
         HStack {
             if let lastSession {
                 VStack(alignment: .leading) {
-                    Text("\(lastSession.duration.formatted(.timeInterval.allowedUnits(.minute)))")
+                    Text(lastSession.duration.formatted(.timeInterval.allowedUnits(.minute)))
                     Text("\(coinText) \(lastSession.coins.formatted(.number))")
                 }
                 Spacer()
                 VStack(alignment: .trailing) {
-                    Text("\(lastSession.startDate.formatted(date: .abbreviated, time: .omitted))")
-                    Text("\(lastSession.startDate.formatted(date: .omitted, time: .standard))")
+                    Text(lastSession.startDate.formatted(date: .abbreviated, time: .omitted))
+                    Text(lastSession.startDate.formatted(date: .omitted, time: .standard))
                 }
             } else {
                 Spacer()
-                Text("Start focusing for \(coinText)!")
+                Text("When you focus, \(coinText) flows!")
                 Spacer()
             }
         }
@@ -144,6 +174,50 @@ struct HomeScreen: View {
         lastSessionQuery.first
     }
     
+    // MARK: - Events
+    
+    /// Called each second.
+    func onTimerTick(date: Date) {
+        now = date
+        if let timerEndDate, now > timerEndDate {
+            timerDidExpire()
+        }
+    }
+    
+    /// The timer finished by itself.
+    func timerDidExpire() {
+        guard let timerStartDate else { return }
+        let coinsWon = calculateCoins()
+        let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: coinsWon)
+        modelContext.insert(session)
+        coins += coinsWon
+        self.timerStartDate = nil
+        lastCoinGain = coinsWon
+        isPresentingCongrats = true
+    }
+    
+    // MARK: - Actions
+    
+    /// The user started the timer.
+    func startTimer() {
+        timerStartDate = Date.now
+    }
+    
+    // MARK: - Utilities
+    
+    /// Calculate the number of coins the user gains, given the current state.
+    func calculateCoins() -> Int {
+        return Int((timerSetting / 60).rounded(.up))
+    }
+    
+    func decreaseTimer() {
+        timerSetting -= 60
+        timerSetting = max(60, timerSetting)
+    }
+    
+    func increaseTimer() {
+        timerSetting += 60
+    }
 }
 
 #Preview {
