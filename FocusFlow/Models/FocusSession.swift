@@ -13,10 +13,12 @@ class FocusSession {
     var startDate: Date
     var duration: TimeInterval
     var multiplier: Double
+    @Relationship var task: ReminderTask? = nil
     
-    init(startDate: Date, duration: TimeInterval, multiplier: Double) {
+    init(startDate: Date, duration: TimeInterval, multiplier: Double, task: ReminderTask? = nil) {
         self.startDate = startDate
         self.duration = duration
         self.multiplier = multiplier
+        self.task = task
     }
 }

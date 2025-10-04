@@ -10,15 +10,27 @@ import SwiftData
 
 struct HomeScreen: View {
     var body: some View {
-        NavigationStack {
-//            ForEach(focusSessions) { session in
-//                Text(session.startDate.formatted(date: .abbreviated, time: .shortened))
-//            }
-            progressView
-            
-            Text(lastSession?.startDate.formatted() ?? "No start date")
-            .navigationTitle("FocusFlow")
+        Color.clear
+            .frame(height: 20)
+        Text("FocusFlow")
+            .font(.largeTitle.bold())
+            .foregroundStyle(Color.accentColor)
+        Spacer()
+        progressView
+        Spacer()
+        Text("Last session")
+            .foregroundStyle(.secondary)
+        VStack {
+            HStack {
+                Text("Thing")
+                Spacer()
+                Text("Other thing")
+            }
+            .padding()
+            .background(Color.primary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
         }
+        .padding(.horizontal)
+        Spacer()
     }
     
     // MARK: - Timer state
@@ -33,12 +45,22 @@ struct HomeScreen: View {
         ZStack {
             CircularProgress(percentage: progressPercentage)
                 .frame(width: 300)
-            
-            Text(progressText)
-                .font(.system(size: 60))
-                .monospacedDigit()
+                .foregroundStyle(Color.accentColor)
+
+            VStack {
+                Text(progressText)
+                    .font(.system(size: 60))
+                    .monospacedDigit()
+                    .foregroundStyle(Color.accentColor)
+                    .padding(.bottom, -1) // layout bug?
+
+                Text("\(Image(systemName: "alarm")) \(progressAlarmTime)")
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 8)
+                    .foregroundStyle(Color.secondary)
+                    .background(Color.accentColor.opacity(0.2), in: Capsule())
+            }
         }
-        .foregroundStyle(Color.accentColor)
     }
     
     var progressPercentage: Double {
@@ -52,6 +74,10 @@ struct HomeScreen: View {
         formatter.unitsStyle = .positional
         formatter.zeroFormattingBehavior = .pad
         return formatter.string(from: interval) ?? "00:00"
+    }
+    
+    var progressAlarmTime: String {
+        "22:01"
     }
     
     // MARK: - Last session

@@ -31,7 +31,7 @@ struct CircularProgress: View {
     CircularProgress(percentage: percentage)
         .frame(width: 200, height: 200)
         .task {
-            for i in 1...50 {
+            for _ in 1...50 {
                 try? await Task.sleep(for: .seconds(1))
                 percentage += 0.01
             }
