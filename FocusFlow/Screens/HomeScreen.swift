@@ -160,18 +160,10 @@ struct HomeScreen: View {
     // MARK: - Last session
     
     @ViewBuilder var lastSessionView: some View {
-        HStack {
-            if let lastSession {
-                VStack(alignment: .leading) {
-                    Text(lastSession.duration.formatted(.timeInterval.allowedUnits(.minute)))
-                    Text("\(coinText) \(lastSession.coins.formatted(.number))")
-                }
-                Spacer()
-                VStack(alignment: .trailing) {
-                    Text(lastSession.startDate.formatted(date: .abbreviated, time: .omitted))
-                    Text(lastSession.startDate.formatted(date: .omitted, time: .standard))
-                }
-            } else {
+        if let lastSession {
+            SessionSummary(session: lastSession)
+        } else {
+            HStack {
                 Spacer()
                 Text("When you focus, \(coinText) flows!")
                 Spacer()

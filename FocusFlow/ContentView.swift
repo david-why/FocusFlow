@@ -14,7 +14,7 @@ enum ContentTab {
 }
 
 struct ContentView: View {
-    @State var tab: ContentTab = .home
+    @State var tab: ContentTab = .sessions // TODO: Change me back to .home
     
     var body: some View {
         TabView(selection: $tab) {
@@ -22,7 +22,7 @@ struct ContentView: View {
                 HomeScreen()
             }
             Tab("Sessions", systemImage: "list.dash.header.rectangle", value: ContentTab.sessions) {
-                Text("Sessions view")
+                SessionsScreen()
             }
         }
     }
