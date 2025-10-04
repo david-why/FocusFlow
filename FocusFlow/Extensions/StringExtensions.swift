@@ -7,11 +7,25 @@
 
 import Foundation
 
+extension NSCalendar.Unit: @retroactive Codable, @retroactive Hashable {}
+extension DateComponentsFormatter.UnitsStyle: @retroactive Codable {}
+
 struct TimeIntervalFormatStyle: FormatStyle {
+    private var allowedUnits: NSCalendar.Unit = [.hour, .minute, .second]
+    private var unitsStyle = DateComponentsFormatter.UnitsStyle.short
+    
+    func allowedUnits(_ units: NSCalendar.Unit) -> Self {
+        return TimeIntervalFormatStyle(allowedUnits: units, unitsStyle: unitsStyle)
+    }
+    
+    func unitsStyle(_ style: DateComponentsFormatter.UnitsStyle) -> Self {
+        return TimeIntervalFormatStyle(allowedUnits: allowedUnits, unitsStyle: style)
+    }
+    
     func format(_ value: TimeInterval) -> String {
         let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.hour, .minute, .second]
-        formatter.unitsStyle = .short
+        formatter.allowedUnits = allowedUnits
+        formatter.unitsStyle = unitsStyle
         return formatter.string(from: value) ?? "0s"
     }
 }

@@ -35,5 +35,6 @@ struct ContentView: View {
         .task {
             let context = container.mainContext
             context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759332600), duration: 3600, coins: 10))
+            UserDefaults.standard.set(10, forKey: "coins")
         }
 }

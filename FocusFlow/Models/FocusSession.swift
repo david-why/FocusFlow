@@ -12,10 +12,10 @@ import SwiftData
 class FocusSession {
     var startDate: Date
     var duration: TimeInterval
-    var coins: Double
+    var coins: Int
     @Relationship var task: ReminderTask? = nil
     
-    init(startDate: Date, duration: TimeInterval, coins: Double, task: ReminderTask? = nil) {
+    init(startDate: Date, duration: TimeInterval, coins: Int, task: ReminderTask? = nil) {
         self.startDate = startDate
         self.duration = duration
         self.coins = coins
