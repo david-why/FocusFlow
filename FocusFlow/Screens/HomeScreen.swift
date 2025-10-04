@@ -11,13 +11,13 @@ import Combine
 
 struct HomeScreen: View {
     @Environment(\.modelContext) var modelContext
+    @Environment(\.scenePhase) var scenePhase
     
     var body: some View {
-        Color.clear
-            .frame(height: 20)
-        Text("FocusFlow")
+        Spacer()
+        Text("Focus!")
             .font(.largeTitle.bold())
-            .padding(.bottom, 8)
+            .padding(.bottom, 4)
         Text("\(coinText) \(coins)")
         Spacer()
         progressView
@@ -37,18 +37,35 @@ struct HomeScreen: View {
             .alert("You did it!", isPresented: $isPresentingCongrats) {} message: {
                 Text("You focused for \(timerSetting.formatted(.timeInterval.allowedUnits(.minute).unitsStyle(.full)))! Enjoy your reward of \(lastCoinGain) coins!")
             }
+            .onChange(of: scenePhase) { old, new in
+                if new != .active && timerRunning {
+                    hasLeftApp = true
+                }
+                if old != .active && new == .active && hasLeftApp {
+                    userDidFail()
+                }
+            }
+            .alert("You failed...", isPresented: $isPresentingFailed) {} message: {
+                Text("You have left the app and failed... You lost 50% of your coins.")
+            }
     }
     
     @AppStorage("coins") var coins: Int = 0
     
     @State var lastCoinGain = 0
     @State var isPresentingCongrats = false
+    @State var isPresentingFailed = false
     
-    // MARK: - Timer state
+    // MARK: - Session state
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     @State var now = Date.now
+    
+    /// Whether the user has left the app. When this is true, `scenePhase != .active`.
+    @State var hasLeftApp = false
+
+    // MARK: - Timer state
     
     @State var timerSetting = TimeInterval(5) // TODO: change me back to 1800
     @State var timerStartDate: Date? = nil
@@ -189,11 +206,19 @@ struct HomeScreen: View {
         guard let timerStartDate else { return }
         let coinsWon = calculateCoins()
         let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: coinsWon)
-        modelContext.insert(session)
+        modelContext.insert(session) // TODO: Extract to its own function
         coins += coinsWon
         self.timerStartDate = nil
         lastCoinGain = coinsWon
         isPresentingCongrats = true
+    }
+    
+    /// The user left the app and then came back now.
+    func userDidFail() {
+        hasLeftApp = false
+        timerStartDate = nil
+        coins /= 2 // TODO: Extract to its own function
+        isPresentingFailed = true
     }
     
     // MARK: - Actions
@@ -203,13 +228,6 @@ struct HomeScreen: View {
         timerStartDate = Date.now
     }
     
-    // MARK: - Utilities
-    
-    /// Calculate the number of coins the user gains, given the current state.
-    func calculateCoins() -> Int {
-        return Int((timerSetting / 60).rounded(.up))
-    }
-    
     func decreaseTimer() {
         timerSetting -= 60
         timerSetting = max(60, timerSetting)
@@ -217,6 +235,13 @@ struct HomeScreen: View {
     
     func increaseTimer() {
         timerSetting += 60
+    }
+
+    // MARK: - Utilities
+    
+    /// Calculate the number of coins the user gains, given the current state.
+    func calculateCoins() -> Int {
+        return Int((timerSetting / 60).rounded(.up))
     }
 }
 

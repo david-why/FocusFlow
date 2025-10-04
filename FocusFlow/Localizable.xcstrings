@@ -23,7 +23,7 @@
       },
       "shouldTranslate" : false
     },
-    "FocusFlow" : {
+    "Focus!" : {
 
     },
     "Home" : {
@@ -42,6 +42,9 @@
 
     },
     "You did it!" : {
+
+    },
+    "You failed..." : {
 
     },
     "You focused for %@! Enjoy your reward of %lld coins!" : {
@@ -65,6 +68,9 @@
           }
         }
       }
+    },
+    "You have left the app and failed... You lost 50% of your coins." : {
+
     }
   },
   "version" : "1.1"
