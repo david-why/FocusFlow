@@ -14,20 +14,17 @@ struct HomeScreen: View {
             .frame(height: 20)
         Text("FocusFlow")
             .font(.largeTitle.bold())
-            .foregroundStyle(Color.accentColor)
+            .padding(.bottom, 8)
+        Text("\(coinText) 0")
         Spacer()
         progressView
         Spacer()
         Text("Last session")
             .foregroundStyle(.secondary)
         VStack {
-            HStack {
-                Text("Thing")
-                Spacer()
-                Text("Other thing")
-            }
-            .padding()
-            .background(Color.primary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+            lastSessionView
+                .padding()
+                .background(.primary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
         }
         .padding(.horizontal)
         Spacer()
@@ -41,6 +38,8 @@ struct HomeScreen: View {
     
     // MARK: - Progress circle
     
+    @ScaledMetric var timerFontSize = 60
+
     @ViewBuilder var progressView: some View {
         ZStack {
             CircularProgress(percentage: progressPercentage)
@@ -49,7 +48,7 @@ struct HomeScreen: View {
 
             VStack {
                 Text(progressText)
-                    .font(.system(size: 60))
+                    .font(.system(size: timerFontSize))
                     .monospacedDigit()
                     .foregroundStyle(Color.accentColor)
                     .padding(.bottom, -1) // layout bug?
@@ -57,7 +56,7 @@ struct HomeScreen: View {
                 Text("\(Image(systemName: "alarm")) \(progressAlarmTime)")
                     .padding(.horizontal, 20)
                     .padding(.vertical, 8)
-                    .foregroundStyle(Color.secondary)
+                    .foregroundStyle(.secondary)
                     .background(Color.accentColor.opacity(0.2), in: Capsule())
             }
         }
@@ -77,10 +76,30 @@ struct HomeScreen: View {
     }
     
     var progressAlarmTime: String {
-        "22:01"
+        (Date.now.addingTimeInterval(timerSetting)).formatted(date: .omitted, time: .shortened)
     }
     
     // MARK: - Last session
+    
+    @ViewBuilder var lastSessionView: some View {
+        HStack {
+            if let lastSession {
+                VStack(alignment: .leading) {
+                    Text("\(lastSession.duration.formatted(.timeInterval))")
+                    Text("\(coinText) \(lastSession.coins.formatted(.number))")
+                }
+                Spacer()
+                VStack(alignment: .trailing) {
+                    Text("\(lastSession.startDate.formatted(date: .abbreviated, time: .omitted))")
+                    Text("\(lastSession.startDate.formatted(date: .omitted, time: .standard))")
+                }
+            } else {
+                Spacer()
+                Text("Start focusing for \(coinText)!")
+                Spacer()
+            }
+        }
+    }
     
     private static var lastSessionDescriptor: FetchDescriptor<FocusSession> {
         var descriptor = FetchDescriptor<FocusSession>(sortBy: [.init(\.startDate, order: .reverse)])
@@ -102,9 +121,6 @@ struct HomeScreen: View {
         .modelContainer(container)
         .task {
             let context = container.mainContext
-            try? await Task.sleep(for: .seconds(1))
-            context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759332600), duration: 3600, multiplier: 1))
-            try? await Task.sleep(for: .seconds(1))
-            context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759327200), duration: 3600, multiplier: 1))
+            context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759332600), duration: 3600, coins: 1))
         }
 }
