@@ -30,4 +30,4 @@ You can start a focus timer, which will fail if you leave the page. If you finis
 
 ## Technical details
 
-This app uses SwiftUI as the frontend framework (duh). It stores focus sessions with SwiftData and the coins, purchased items, etc. with UserDefaults.
+This app uses SwiftUI as the frontend framework (duh). It stores focus sessions with SwiftData and the coins, purchased items, and some temporary state with UserDefaults.

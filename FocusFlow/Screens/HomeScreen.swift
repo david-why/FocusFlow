@@ -38,23 +38,51 @@ struct HomeScreen: View {
                 Text("You focused for \(timerSetting.formatted(.timeInterval.allowedUnits(.minute).unitsStyle(.full)))! Enjoy your reward of \(lastCoinGain) coins!")
             }
             .onChange(of: scenePhase) { old, new in
-                if new != .active && timerRunning {
-                    hasLeftApp = true
-                }
-                if old != .active && new == .active && hasLeftApp {
+                print("Scene phase changed to \(new)")
+                if new == .background && timerRunning {
+                    print("Failed due to scene changed to .background")
                     userDidFail()
+                }
+                if new == .active && isFailing {
+                    penalizeUser()
                 }
             }
             .alert("You failed...", isPresented: $isPresentingFailed) {} message: {
-                Text("You have left the app and failed... You lost 50% of your coins.")
+                Text("You have left this page... You lost 50% of your coins.")
+            }
+            .onDisappear {
+                print("onDisappear: \(timerRunning) \(scenePhase)")
+                if timerRunning && scenePhase == .active {
+                    print("Failed due to timer running on onDisappear")
+                    userDidFail()
+                }
+            }
+            .onAppear {
+                if isFailing {
+                    penalizeUser()
+                }
+            }
+            .onChange(of: timerRunning) { old, new in
+                print("timerRunning changed to \(new)")
+                UIApplication.shared.isIdleTimerDisabled = new
+            }
+            .alert("Warning!", isPresented: $isPresentingHint) {
+                Button("OK") {
+                    hintShown = true
+                    startTimer()
+                }
+            } message: {
+                Text("Once you press OK, you must not leave this page (including closing this app AND switching to another tab)! Otherwise, your hard-earned coins are at risk...")
             }
     }
     
-    @AppStorage("coins") var coins: Int = 0
+    @AppStorage("home_hint_shown") var hintShown = false
+    @AppStorage("coins") var coins = 0
     
     @State var lastCoinGain = 0
     @State var isPresentingCongrats = false
     @State var isPresentingFailed = false
+    @State var isPresentingHint = false
     
     // MARK: - Session state
     
@@ -62,13 +90,29 @@ struct HomeScreen: View {
     
     @State var now = Date.now
     
-    /// Whether the user has left the app. When this is true, `scenePhase != .active`.
-    @State var hasLeftApp = false
-
+    @AppStorage("is_current_failing") var isFailing = false
+    @AppStorage("current_fail_time") var failTime = Date.distantPast
+    
     // MARK: - Timer state
     
-    @State var timerSetting = TimeInterval(5) // TODO: change me back to 1800
-    @State var timerStartDate: Date? = nil
+    @AppStorage("timer_setting") var timerSetting = TimeInterval(1800)
+    
+    @AppStorage("timer_is_started") var timerIsStartedValue = false
+    @AppStorage("timer_start_date") var timerStartDateValue = Date.now
+    
+    var timerStartDate: Date? {
+        get {
+            timerIsStartedValue ? timerStartDateValue : nil
+        }
+        nonmutating set {
+            if let date = newValue {
+                timerIsStartedValue = true
+                timerStartDateValue = date
+            } else {
+                timerIsStartedValue = false
+            }
+        }
+    }
     
     var timerRunning: Bool {
         timerStartDate != nil
@@ -136,10 +180,12 @@ struct HomeScreen: View {
     @ViewBuilder var buttonsView: some View {
         HStack {
             actionButton(systemImage: "minus", action: decreaseTimer)
+                .buttonRepeatBehavior(.enabled)
             Spacer()
             actionButton(systemImage: timerRunning ? "stop" : "play", style: .borderedProminent, action: startTimer)
             Spacer()
             actionButton(systemImage: "plus", action: increaseTimer)
+                .buttonRepeatBehavior(.enabled)
         }
         .frame(maxWidth: 300)
         .disabled(timerRunning)
@@ -197,7 +243,7 @@ struct HomeScreen: View {
     func timerDidExpire() {
         guard let timerStartDate else { return }
         let coinsWon = calculateCoins()
-        let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: coinsWon)
+        let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: coinsWon, actualDuration: timerSetting)
         modelContext.insert(session) // TODO: Extract to its own function
         coins += coinsWon
         self.timerStartDate = nil
@@ -205,19 +251,36 @@ struct HomeScreen: View {
         isPresentingCongrats = true
     }
     
-    /// The user left the app and then came back now.
+    /// The user left the app.
     func userDidFail() {
-        hasLeftApp = false
-        timerStartDate = nil
-        coins /= 2 // TODO: Extract to its own function
+        guard !isFailing, let timerStartDate else { return }
+        isFailing = true
+        failTime = .now
+        let coinsLost = (coins + 1) / 2
+        let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: -coinsLost, actualDuration: failTime.timeIntervalSince(timerStartDate), failed: true)
+        modelContext.insert(session)
+        coins -= coinsLost // TODO: Extract to its own function
+        self.timerStartDate = nil
+        try? modelContext.save()
+        UserDefaults.standard.synchronize()
+    }
+    
+    /// The user has returned after failing. (How dare they?)
+    func penalizeUser() {
+        guard isFailing else { return }
+        isFailing = false
         isPresentingFailed = true
     }
     
     // MARK: - Actions
     
-    /// The user started the timer.
+    /// The user clicked the start button.
     func startTimer() {
-        timerStartDate = Date.now
+        if !hintShown {
+            isPresentingHint = true
+        } else {
+            timerStartDate = Date.now
+        }
     }
     
     func decreaseTimer() {
@@ -243,7 +306,7 @@ struct HomeScreen: View {
         .modelContainer(container)
         .task {
             let context = container.mainContext
-            context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759332600), duration: 3600, coins: 10))
+            context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759332600), duration: 3600, coins: 10, actualDuration: 3600))
             UserDefaults.standard.set(10, forKey: "coins")
         }
 }

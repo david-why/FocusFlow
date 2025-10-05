@@ -1,6 +1,19 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    " (%@)" : {
+
+    },
+    "%@ / %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ / %2$@"
+          }
+        }
+      }
+    },
     "%@ %@" : {
       "localizations" : {
         "en" : {
@@ -23,6 +36,25 @@
       },
       "shouldTranslate" : false
     },
+    "Coins" : {
+
+    },
+    "Coins remaining: %@ %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Coins remaining: %1$@ %2$lld"
+          }
+        }
+      }
+    },
+    "Delete this session" : {
+
+    },
+    "Duration" : {
+
+    },
     "Focus!" : {
 
     },
@@ -32,7 +64,37 @@
     "Last session" : {
 
     },
+    "No sessions yet. Start focusing!" : {
+
+    },
+    "Not enough coins!" : {
+
+    },
+    "OK" : {
+
+    },
+    "Once you press OK, you must not leave this page (including closing this app AND switching to another tab)! Otherwise, your hard-earned coins are at risk..." : {
+
+    },
+    "Owned: %lld" : {
+
+    },
+    "Purchase!" : {
+
+    },
+    "Quantity: %lld" : {
+
+    },
     "Sessions" : {
+
+    },
+    "Store" : {
+
+    },
+    "Time" : {
+
+    },
+    "Warning!" : {
 
     },
     "When you focus, %@ flows!" : {
@@ -66,8 +128,28 @@
         }
       }
     },
-    "You have left the app and failed... You lost 50% of your coins." : {
+    "You have left this page... You lost 50% of your coins." : {
 
+    },
+    "You have: %@ %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "You have: %1$@ %2$lld"
+          }
+        }
+      }
+    },
+    "You need: %@ %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "You need: %1$@ %2$lld"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

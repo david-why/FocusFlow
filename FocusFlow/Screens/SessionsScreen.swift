@@ -23,7 +23,7 @@ struct SessionsScreen: View {
                 }
                 .onDelete(perform: deleteIndices)
                 if sessions.isEmpty {
-                    Text("When you focus, \(coinText) flows!")
+                    Text("No sessions yet. Start focusing!")
                 }
             }
             .navigationTitle("Sessions")
@@ -74,6 +74,6 @@ struct SessionDetailView: View {
 
 #Preview("Session detail") {
     NavigationStack {
-        SessionDetailView(session: FocusSession(startDate: .now, duration: 1800, coins: 30, task: nil))
+        SessionDetailView(session: FocusSession(startDate: .now, duration: 1800, coins: 30, actualDuration: 1800))
     }
 }

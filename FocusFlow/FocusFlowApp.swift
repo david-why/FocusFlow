@@ -10,10 +10,24 @@ import SwiftData
 
 @main
 struct FocusFlowApp: App {
+    let container: ModelContainer
+    
+    init() {
+        do {
+            container = try ModelContainer(
+                for: FocusSession.self, ReminderTask.self,
+                migrationPlan: MigrationPlan.self
+            )
+        } catch {
+            container = try! ModelContainer(for: FocusSession.self, ReminderTask.self)
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(StoreService())
         }
-        .modelContainer(for: FocusSession.self)
+        .modelContainer(container)
     }
 }

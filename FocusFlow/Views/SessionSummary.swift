@@ -13,7 +13,7 @@ struct SessionSummary: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(session.duration.formatted(.timeInterval.allowedUnits(.minute)))
+                durationField
                 Text("\(coinText) \(session.coins.formatted(.number))")
             }
             Spacer()
@@ -23,8 +23,33 @@ struct SessionSummary: View {
             }
         }
     }
+    
+    @ViewBuilder var durationField: some View {
+        if session.failed {
+            Text("\(formattedActualDuration) / \(formattedDuration)")
+                .foregroundStyle(.red)
+        } else if session.actualDuration != session.duration {
+            Text(formattedDuration)
+            + Text(" (\(formattedActualDuration))")
+                .foregroundStyle(.secondary)
+        } else {
+            Text(formattedDuration)
+        }
+    }
+    
+    var formattedDuration: String {
+        session.duration.formatted(.timeInterval.allowedUnits(.minute))
+    }
+    
+    var formattedActualDuration: String {
+        session.actualDuration.formatted(.timeInterval.allowedUnits([.minute, .second]))
+    }
 }
 
 #Preview {
-    SessionSummary(session: FocusSession(startDate: Date.now, duration: 1800, coins: 30))
+    SessionSummary(session: FocusSession(startDate: Date.now, duration: 1800, coins: 30, actualDuration: 1800))
+}
+
+#Preview("Failed") {
+    SessionSummary(session: FocusSession(startDate: Date.now, duration: 1800, coins: -30, actualDuration: 30, failed: true))
 }

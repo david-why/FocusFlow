@@ -15,7 +15,7 @@ enum ContentTab {
 }
 
 struct ContentView: View {
-    @State var tab: ContentTab = .store // TODO: Change me back to .home
+    @State var tab: ContentTab = .home
     
     var body: some View {
         TabView(selection: $tab) {
@@ -39,8 +39,8 @@ struct ContentView: View {
         .environment(StoreService())
         .task {
             let context = container.mainContext
-            context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759332600), duration: 3600, coins: 10))
-            context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759339800), duration: 3600, coins: 30))
+            context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759332600), duration: 3600, coins: 10, actualDuration: 3600))
+            context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759339800), duration: 3600, coins: 30, actualDuration: 3600))
             UserDefaults.standard.set(50, forKey: "coins")
         }
 }

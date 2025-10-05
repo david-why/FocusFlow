@@ -15,8 +15,8 @@ struct StoreItem: Identifiable {
 }
 
 let storeItems = [
-    StoreItem(id: "break-1", name: "1-minute Break Pass", description: "Use this pass to take a 1 minute break on your phone in a focus session!", price: 30),
-    StoreItem(id: "break-5", name: "5-minute Break Pass", description: "Use this pass to take a 1 minute break on your phone in a focus session!", price: 200)
+    StoreItem(id: "break-1", name: "1-minute Break Pass", description: "Use this pass to take a 1 minute break on your phone in a focus session! Automatically applied when you leave the app.", price: 30),
+    StoreItem(id: "break-5", name: "5-minute Break Pass", description: "Use this pass to take a 5 minute break on your phone in a focus session! Automatically applied when you leave the app.", price: 200)
 ]
 
 struct StoreScreen: View {
