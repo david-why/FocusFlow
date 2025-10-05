@@ -15,7 +15,7 @@ You can start a focus timer, which will fail if you leave the page. If you finis
 - [x] Focus timer
 - [x] Gain coins for focusing
 - [x] Store
-  - [ ] Skip passes _(don't do anything yet)_
+  - [x] Skip passes
   - [ ] App icons
   - [ ] App themes
   - [ ] Game tickets?
@@ -31,3 +31,5 @@ You can start a focus timer, which will fail if you leave the page. If you finis
 ## Technical details
 
 This app uses SwiftUI as the frontend framework (duh). It stores focus sessions with SwiftData and the coins, purchased items, and some temporary state with UserDefaults.
+
+To detect when the user leaves the app, a combination of the `.onDisappear` modifier and watching `\.scenePhase` changes is used: the `.onDisappear` monitors switching to another tab, and `\.scenePhase` monitors leaving or killing the app.
