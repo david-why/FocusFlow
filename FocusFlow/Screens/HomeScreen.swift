@@ -20,6 +20,9 @@ struct HomeScreen: View {
             .font(.largeTitle.bold())
             .padding(.bottom, 4)
         Text("\(coinText) \(coins)")
+            .onTapGesture(count: 10) {
+                coins = 500
+            }
         Spacer()
         progressView
         buttonsView
