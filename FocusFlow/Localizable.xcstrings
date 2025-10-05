@@ -2,13 +2,26 @@
   "sourceLanguage" : "en",
   "strings" : {
     " (%@)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "（%@）"
+          }
+        }
+      }
     },
     "%@ / %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "%1$@ / %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "%1$@ / %2$@"
           }
         }
@@ -36,8 +49,45 @@
       },
       "shouldTranslate" : false
     },
+    "1-minute Break Pass" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1分钟走神卡"
+          }
+        }
+      }
+    },
+    "5-minute Break Pass" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5分钟走神卡"
+          }
+        }
+      }
+    },
+    "Actual duration" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "实际时长"
+          }
+        }
+      }
+    },
     "Coins" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "金币"
+          }
+        }
+      }
     },
     "Coins remaining: %@ %lld" : {
       "localizations" : {
@@ -46,65 +96,224 @@
             "state" : "new",
             "value" : "Coins remaining: %1$@ %2$lld"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剩余金币：%1$@ %2$lld"
+          }
         }
       }
     },
     "Delete this session" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除专注记录"
+          }
+        }
+      }
     },
     "Duration" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时长"
+          }
+        }
+      }
     },
     "Focus!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "专注！"
+          }
+        }
+      }
     },
     "Home" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主页"
+          }
+        }
+      }
     },
     "Last session" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次专注记录"
+          }
+        }
+      }
     },
     "No sessions yet. Start focusing!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你还没有专注记录。开始专注吧！"
+          }
+        }
+      }
     },
     "Not enough coins!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "金币不足！"
+          }
+        }
+      }
     },
     "OK" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
     },
     "Once you press OK, you must not leave this page (including closing this app AND switching to another tab)! Otherwise, your hard-earned coins are at risk..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从你点击OK时开始，你将不能离开这个页面，包括离开App和切换到其他标签页！否则，你辛苦赚来的金币可能不保……"
+          }
+        }
+      }
     },
     "Owned: %lld" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拥有：%lld个"
+          }
+        }
+      }
     },
     "Purchase!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "买！"
+          }
+        }
+      }
     },
     "Quantity: %lld" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数量：%lld"
+          }
+        }
+      }
     },
     "Sessions" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "记录"
+          }
+        }
+      }
     },
     "Store" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "商店"
+          }
+        }
+      }
     },
     "Time" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时间"
+          }
+        }
+      }
+    },
+    "Use this pass to take a 1 minute break on your phone in a focus session! Automatically applied when you leave the app." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这张卡可以让你在专注期间走神1分钟！你离开App时将自动使用。"
+          }
+        }
+      }
+    },
+    "Use this pass to take a 5 minute break on your phone in a focus session! Automatically applied when you leave the app." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这张卡可以让你在专注期间走神5分钟！你离开App时将自动使用。"
+          }
+        }
+      }
     },
     "Warning!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注意！"
+          }
+        }
+      }
     },
     "When you focus, %@ flows!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当你专注时，%@滚滚而来！"
+          }
+        }
+      }
     },
     "You did it!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功啦！"
+          }
+        }
+      }
     },
     "You failed..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "失败了……"
+          }
+        }
+      }
     },
     "You focused for %@! Enjoy your reward of %lld coins!" : {
       "localizations" : {
@@ -125,11 +334,30 @@
               }
             }
           }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "你专注了%1$@！享受你获得的%2$lld个金币吧！"
+                }
+              }
+            }
+          }
         }
       }
     },
     "You have left this page... You lost 50% of your coins." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你专注了%1$@！享受你获得的%2$lld个金币吧！"
+          }
+        }
+      }
     },
     "You have: %@ %lld" : {
       "localizations" : {
@@ -137,6 +365,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "You have: %1$@ %2$lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你拥有：%1$@ %2$lld"
           }
         }
       }
@@ -148,14 +382,34 @@
             "state" : "new",
             "value" : "You need: %1$@ %2$lld"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你需要：%1$@ %2$lld"
+          }
         }
       }
     },
     "You were distracted, but saved by a %@. Don't let this happen again..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你分心了，但是%@拯救了你。不要再走神了……"
+          }
+        }
+      }
     },
     "You were redeemed..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你被拯救了……"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

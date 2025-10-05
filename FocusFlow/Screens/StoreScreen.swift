@@ -9,8 +9,8 @@ import SwiftUI
 
 struct StoreItem: Identifiable {
     let id: String
-    let name: String
-    let description: String
+    let name: LocalizedStringKey
+    let description: LocalizedStringKey
     let price: Int
 }
 
@@ -32,7 +32,7 @@ struct StoreScreen: View {
                 ForEach(storeItems) { item in
                     Section {
                         Button {
-                            openPurchaseForm(for: item)
+                            itemTapped(for: item)
                         } label: {
                             StoreItemView(item: item)
                         }
@@ -51,8 +51,12 @@ struct StoreScreen: View {
     
     @State var purchasingItemID: String? = nil
     
-    func openPurchaseForm(for item: StoreItem) {
-        purchasingItemID = item.id
+    func itemTapped(for item: StoreItem) {
+        if purchasingItemID == item.id {
+            purchasingItemID = nil
+        } else {
+            purchasingItemID = item.id
+        }
     }
 }
 

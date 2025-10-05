@@ -91,7 +91,7 @@ struct HomeScreen: View {
     @State var isPresentingFailed = false
     @State var isPresentingHint = false
     @State var isPresentingSaved = false
-    @State var savedPassName: String? = nil
+    @State var savedPassName: LocalizedStringResource? = nil
     
     // MARK: - Session state
     
