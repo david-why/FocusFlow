@@ -4,7 +4,9 @@ _When you focus, <img src="public/coin.png" style="height: 1em"/> flows!_
 
 ## Installation
 
-You can install the app from TestFlight here: (link TBD)
+You can [install the app from TestFlight](https://testflight.apple.com/join/sAu8hyE2)! (Note: if the link doesn't work, it's because Apple is still approving my build.)
+
+Alternatively, you can clone the repo, open the project in Xcode, and run it yourself by clicking the "run" button.
 
 ## Usage
 
