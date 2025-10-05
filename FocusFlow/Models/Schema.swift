@@ -56,11 +56,11 @@ enum SchemaV2: VersionedSchema {
         var coins: Int
         /// The amount of time actually spent focusing (equal to duration
         /// when `!failed`).
-        var actualDuration: TimeInterval
+        var actualDuration: TimeInterval = 0
         var failed: Bool = false
         @Relationship var task: ReminderTask? = nil
         
-        init(startDate: Date, duration: TimeInterval, coins: Int, actualDuration: TimeInterval, failed: Bool = false, task: ReminderTask? = nil) {
+        init(startDate: Date, duration: TimeInterval, coins: Int, actualDuration: TimeInterval = 0, failed: Bool = false, task: ReminderTask? = nil) {
             self.startDate = startDate
             self.duration = duration
             self.coins = coins
@@ -87,9 +87,14 @@ enum SchemaV2: VersionedSchema {
 }
 
 enum MigrationPlan: SchemaMigrationPlan {
-    static var schemas: [any VersionedSchema.Type] = [SchemaV1.self, SchemaV2.self]
+    static var schemas: [any VersionedSchema.Type] = [
+        SchemaV1.self,
+        SchemaV2.self
+    ]
     
-    static var stages = [migrateV1toV2]
+    static var stages = [
+        migrateV1toV2
+    ]
     
     static let migrateV1toV2 = MigrationStage.custom(fromVersion: SchemaV1.self, toVersion: SchemaV2.self, willMigrate: nil) { context in
         print("Selecting models to add actualDuration")

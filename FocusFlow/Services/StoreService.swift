@@ -30,7 +30,9 @@ class StoreService {
         loadOwnedItems()
         observation = UserDefaults.standard.observe(\.ownedItemsData) { _, _ in
             print("UserDefaults updated")
-            self.loadOwnedItems()
+            Task { @MainActor in
+                self.loadOwnedItems()
+            }
         }
     }
     
@@ -57,15 +59,13 @@ class StoreService {
         saveOwnedItems()
     }
     
-    private func loadOwnedItems() {
+    @MainActor private func loadOwnedItems() {
         guard let data = UserDefaults.standard.ownedItemsData,
               let itemList = try? JSONDecoder().decode([OwnedItem].self, from: data) else {
             ownedItems = []
             return
         }
-        Task { @MainActor in
-            ownedItems = itemList
-        }
+        ownedItems = itemList
     }
     
     private func saveOwnedItems() {

@@ -27,6 +27,11 @@ You can start a focus timer, which will fail if you leave the page. If you finis
 - [ ] Coin multipliers
   - [ ] Random daily bonus
   - [ ] Task completion before deadline
+- [ ] Shortcuts integration
+  - [ ] Start focus sessions in app
+  - [ ] Find store items
+  - [ ] Purchase store items
+  - [ ] Find sessions
 
 ## Technical details
 
