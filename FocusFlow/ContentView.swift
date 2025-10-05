@@ -11,10 +11,11 @@ import SwiftData
 enum ContentTab {
     case home
     case sessions
+    case store
 }
 
 struct ContentView: View {
-    @State var tab: ContentTab = .sessions // TODO: Change me back to .home
+    @State var tab: ContentTab = .store // TODO: Change me back to .home
     
     var body: some View {
         TabView(selection: $tab) {
@@ -24,6 +25,9 @@ struct ContentView: View {
             Tab("Sessions", systemImage: "list.dash.header.rectangle", value: ContentTab.sessions) {
                 SessionsScreen()
             }
+            Tab("Store", systemImage: "cart", value: ContentTab.store) {
+                StoreScreen()
+            }
         }
     }
 }
@@ -32,10 +36,11 @@ struct ContentView: View {
     let container = try! ModelContainer(for: FocusSession.self, configurations: .init(isStoredInMemoryOnly: true))
     ContentView()
         .modelContainer(container)
+        .environment(StoreService())
         .task {
             let context = container.mainContext
             context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759332600), duration: 3600, coins: 10))
             context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759339800), duration: 3600, coins: 30))
-            UserDefaults.standard.set(10, forKey: "coins")
+            UserDefaults.standard.set(50, forKey: "coins")
         }
 }
