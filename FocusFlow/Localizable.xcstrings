@@ -150,6 +150,12 @@
           }
         }
       }
+    },
+    "You were distracted, but saved by a %@. Don't let this happen again..." : {
+
+    },
+    "You were redeemed..." : {
+
     }
   },
   "version" : "1.1"

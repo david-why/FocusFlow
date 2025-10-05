@@ -48,6 +48,15 @@ class StoreService {
         ownedItems.count { $0.itemID == itemID }
     }
     
+    func items(of itemID: String) -> [OwnedItem] {
+        ownedItems.filter { $0.itemID == itemID }
+    }
+    
+    func delete(_ item: OwnedItem) {
+        ownedItems.removeAll { $0.id == item.id }
+        saveOwnedItems()
+    }
+    
     private func loadOwnedItems() {
         guard let data = UserDefaults.standard.ownedItemsData,
               let itemList = try? JSONDecoder().decode([OwnedItem].self, from: data) else {

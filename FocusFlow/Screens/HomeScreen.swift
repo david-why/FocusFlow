@@ -12,6 +12,7 @@ import Combine
 struct HomeScreen: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.scenePhase) var scenePhase
+    @Environment(StoreService.self) var storeService
     
     var body: some View {
         Spacer()
@@ -74,6 +75,9 @@ struct HomeScreen: View {
             } message: {
                 Text("Once you press OK, you must not leave this page (including closing this app AND switching to another tab)! Otherwise, your hard-earned coins are at risk...")
             }
+            .alert("You were redeemed...", isPresented: $isPresentingSaved, presenting: savedPassName) { _ in } message: { name in
+                Text("You were distracted, but saved by a \(name). Don't let this happen again...")
+            }
     }
     
     @AppStorage("home_hint_shown") var hintShown = false
@@ -83,6 +87,8 @@ struct HomeScreen: View {
     @State var isPresentingCongrats = false
     @State var isPresentingFailed = false
     @State var isPresentingHint = false
+    @State var isPresentingSaved = false
+    @State var savedPassName: String? = nil
     
     // MARK: - Session state
     
@@ -92,11 +98,13 @@ struct HomeScreen: View {
     
     @AppStorage("is_current_failing") var isFailing = false
     @AppStorage("current_fail_time") var failTime = Date.distantPast
-    
+    @AppStorage("current_fail_start_date") var failStartDate = Date.distantPast
+
     // MARK: - Timer state
     
     @AppStorage("timer_setting") var timerSetting = TimeInterval(1800)
     
+    @AppStorage("timer_distracted_time") var timerDistractedTime = TimeInterval(0)
     @AppStorage("timer_is_started") var timerIsStartedValue = false
     @AppStorage("timer_start_date") var timerStartDateValue = Date.now
     
@@ -147,7 +155,7 @@ struct HomeScreen: View {
                     .foregroundStyle(Color.accentColor)
                     .padding(.bottom, -1) // layout bug?
 
-                Text("\(Image(systemName: "alarm")) \(progressAlarmTime)")
+                Text("\(Image(systemName: "flag.pattern.checkered")) \(progressAlarmTime)")
                     .padding(.horizontal, 20)
                     .padding(.vertical, 8)
                     .foregroundStyle(.secondary)
@@ -243,7 +251,7 @@ struct HomeScreen: View {
     func timerDidExpire() {
         guard let timerStartDate else { return }
         let coinsWon = calculateCoins()
-        let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: coinsWon, actualDuration: timerSetting)
+        let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: coinsWon, actualDuration: timerSetting - timerDistractedTime)
         modelContext.insert(session) // TODO: Extract to its own function
         coins += coinsWon
         self.timerStartDate = nil
@@ -256,12 +264,8 @@ struct HomeScreen: View {
         guard !isFailing, let timerStartDate else { return }
         isFailing = true
         failTime = .now
-        let coinsLost = (coins + 1) / 2
-        let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: -coinsLost, actualDuration: failTime.timeIntervalSince(timerStartDate), failed: true)
-        modelContext.insert(session)
-        coins -= coinsLost // TODO: Extract to its own function
+        failStartDate = timerStartDate
         self.timerStartDate = nil
-        try? modelContext.save()
         UserDefaults.standard.synchronize()
     }
     
@@ -269,6 +273,37 @@ struct HomeScreen: View {
     func penalizeUser() {
         guard isFailing else { return }
         isFailing = false
+        var shouldPenalize = true
+        let distractionEndDate = min(Date.now, failStartDate + timerSetting)
+        // Use the passes
+        if distractionEndDate.timeIntervalSince(failTime) <= 60 {
+            let passes = storeService.items(of: "break-1")
+            if let pass = passes.first {
+                storeService.delete(pass)
+                shouldPenalize = false
+                isPresentingSaved = true
+                savedPassName = "1-minute Break Pass"
+                timerDistractedTime += distractionEndDate.timeIntervalSince(failTime)
+                timerStartDate = failStartDate
+            }
+        }
+        guard shouldPenalize else { return }
+        if distractionEndDate.timeIntervalSince(failTime) <= 300 {
+            let passes = storeService.items(of: "break-5")
+            if let pass = passes.first {
+                storeService.delete(pass)
+                shouldPenalize = false
+                isPresentingSaved = true
+                savedPassName = "5-minute Break Pass"
+                timerDistractedTime += distractionEndDate.timeIntervalSince(failTime)
+                timerStartDate = failStartDate
+            }
+        }
+        guard shouldPenalize else { return }
+        let coinsLost = (coins + 1) / 2
+        let session = FocusSession(startDate: failStartDate, duration: timerSetting, coins: -coinsLost, actualDuration: failTime.timeIntervalSince(failStartDate), failed: true)
+        modelContext.insert(session)
+        coins -= coinsLost // TODO: Extract to its own function
         isPresentingFailed = true
     }
     
@@ -279,6 +314,7 @@ struct HomeScreen: View {
         if !hintShown {
             isPresentingHint = true
         } else {
+            timerDistractedTime = 0
             timerStartDate = Date.now
         }
     }
@@ -296,7 +332,7 @@ struct HomeScreen: View {
     
     /// Calculate the number of coins the user gains, given the current state.
     func calculateCoins() -> Int {
-        return Int((timerSetting / 60).rounded(.up))
+        return Int(((timerSetting - timerDistractedTime) / 60).rounded(.up))
     }
 }
 

@@ -50,7 +50,12 @@ struct SessionDetailView: View {
             Section {
                 LabeledContent("Time", value: session.startDate.formatted(date: .abbreviated, time: .shortened))
                 
-                LabeledContent("Duration", value: session.duration.formatted(.timeInterval))
+                LabeledContent("Duration", value: session.duration.formatted(.timeInterval.allowedUnits(.minute)))
+                
+                LabeledContent("Actual duration") {
+                    Text(session.actualDuration.formatted(.timeInterval.allowedUnits([.minute, .second])))
+                        .if(session.failed) { $0.foregroundStyle(.red) }
+                }
                 
                 LabeledContent("Coins") {
                     Text("\(coinText) \(session.coins)")
