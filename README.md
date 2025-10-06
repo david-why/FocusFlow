@@ -35,6 +35,10 @@ You can start a focus timer, which will fail if you leave the page. If you finis
   - [ ] Purchase store items
   - [ ] Find sessions
 
+## Demo 
+
+Check out [the demo website](https://davidwhy.me/FocusFlow/) for the demo video!
+
 ## Technical details
 
 This app uses SwiftUI as the frontend framework (duh). It stores focus sessions with SwiftData and the coins, purchased items, and some temporary state with UserDefaults.
