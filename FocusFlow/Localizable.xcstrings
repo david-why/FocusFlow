@@ -105,6 +105,9 @@
         }
       }
     },
+    "Coral App Icon" : {
+
+    },
     "Delete this session" : {
       "localizations" : {
         "zh-Hans" : {
@@ -125,6 +128,9 @@
         }
       }
     },
+    "Emerald App Icon" : {
+
+    },
     "Focus!" : {
       "localizations" : {
         "zh-Hans" : {
@@ -134,6 +140,9 @@
           }
         }
       }
+    },
+    "Frost App Icon" : {
+
     },
     "Home" : {
       "localizations" : {
@@ -225,6 +234,15 @@
         }
       }
     },
+    "Rainbow App Icon" : {
+
+    },
+    "Reached purchase limit" : {
+
+    },
+    "Reset app icon" : {
+
+    },
     "Sessions" : {
       "localizations" : {
         "zh-Hans" : {
@@ -255,6 +273,24 @@
         }
       }
     },
+    "Unlock the Coral app icon, vibrant and warm like an ocean sunset!" : {
+
+    },
+    "Unlock the Emerald app icon, fresh and lively like a lush forest!" : {
+
+    },
+    "Unlock the Frost app icon, cool and crisp like a winter morning!" : {
+
+    },
+    "Unlock the Rainbow app icon, joyful and diverse like a burst of color!" : {
+
+    },
+    "Unlock the Violet app icon, mysterious and regal like a twilight sky!" : {
+
+    },
+    "Use this icon!" : {
+
+    },
     "Use this pass to take a 1 minute break on your phone in a focus session! Automatically applied when you leave the app." : {
       "localizations" : {
         "zh-Hans" : {
@@ -274,6 +310,9 @@
           }
         }
       }
+    },
+    "Violet App Icon" : {
+
     },
     "Warning!" : {
       "localizations" : {
