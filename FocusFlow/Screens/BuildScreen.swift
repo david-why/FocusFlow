@@ -51,10 +51,39 @@ struct BuildCanvas: View {
             Color.white
                 .frame(height: 400)
             ForEach(items) { item in
-                item.view
-                    .offset(x: item.offsetX, y: item.offsetY)
+                BuildItemView(item: item)
             }
         }
+    }
+}
+
+struct BuildItemView: View {
+    @Bindable var item: BuildingItem
+    
+    @State private var dragStartOffset: CGSize? = nil
+    
+    var body: some View {
+        item.view
+            .offset(x: item.offsetX, y: item.offsetY)
+            .onTapGesture {
+                print(item.hashValue)
+            }
+            .gesture(drag)
+    }
+    
+    var drag: some Gesture {
+        DragGesture()
+            .onChanged { value in
+                if let dragStartOffset {
+                    item.offsetX = dragStartOffset.width + value.translation.width
+                    item.offsetY = dragStartOffset.height + value.translation.height
+                } else {
+                    dragStartOffset = CGSize(width: item.offsetX, height: item.offsetY)
+                }
+            }
+            .onEnded { _ in
+                dragStartOffset = nil
+            }
     }
 }
 
@@ -84,7 +113,7 @@ enum BuildItemContent: Equatable {
     }
     .modelContainer(container)
     .onAppear {
-        context.insert(BuildingItem(content: .image(name: "coin"), offsetX: 2, offsetY: 0, zIndex: 1))
-        context.insert(BuildingItem(content: .image(name: "coin"), offsetX: 100, offsetY: 100, zIndex: 1))
+        context.insert(BuildingItem(content: .image(name: "coin"), offsetX: 0, offsetY: 0, zIndex: 1))
+        context.insert(BuildingItem(content: .image(name: "coin"), offsetX: 0, offsetY: 0, zIndex: 1))
     }
 }
