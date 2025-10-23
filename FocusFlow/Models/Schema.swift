@@ -84,16 +84,35 @@ enum SchemaV2: VersionedSchema {
             self.sessions = sessions
         }
     }
+    
+    @Model
+    class BuildingItem {
+        var content: BuildingItemContent
+        var offsetX: Double
+        var offsetY: Double
+        var zIndex: Int
+        
+        init(content: BuildingItemContent, offsetX: Double, offsetY: Double, zIndex: Int) {
+            self.content = content
+            self.offsetX = offsetX
+            self.offsetY = offsetY
+            self.zIndex = zIndex
+        }
+    }
+    
+    enum BuildingItemContent: Codable {
+        case image(name: String)
+    }
 }
 
 enum MigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] = [
         SchemaV1.self,
-        SchemaV2.self
+        SchemaV2.self,
     ]
     
     static var stages = [
-        migrateV1toV2
+        migrateV1toV2,
     ]
     
     static let migrateV1toV2 = MigrationStage.custom(fromVersion: SchemaV1.self, toVersion: SchemaV2.self, willMigrate: nil) { context in
@@ -115,3 +134,4 @@ enum MigrationPlan: SchemaMigrationPlan {
 typealias CurrentSchema = SchemaV2
 typealias FocusSession = CurrentSchema.FocusSession
 typealias ReminderTask = CurrentSchema.ReminderTask
+typealias BuildingItem = CurrentSchema.BuildingItem

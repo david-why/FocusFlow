@@ -6,9 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct BuildScreen: View {
-    @State var state: BuildState
+    @Environment(\.modelContext) var modelContext
+    @State var state: BuildState!
+    
+    init() {
+        state = BuildState(modelContext: modelContext)
+    }
     
     var body: some View {
         NavigationStack {
@@ -25,6 +31,14 @@ struct BuildScreen: View {
             }
             .navigationTitle("Build")
         }
+        .onChange(of: state.items) {
+            print(state.items)
+        }
+        .onAppear {
+            if state.items.isEmpty {
+                state.addItem(BuildingItem(content: .image(name: "coin"), offsetX: 2, offsetY: 0, zIndex: 1))
+            }
+        }
     }
 }
 
@@ -37,7 +51,7 @@ struct BuildCanvas: View {
                 .frame(height: 400)
             ForEach(state.items) { item in
                 item.view
-                    .offset(item.offset)
+                    .offset(x: item.offsetX, y: item.offsetY)
             }
         }
     }
@@ -45,31 +59,43 @@ struct BuildCanvas: View {
 
 @Observable
 class BuildState {
-    var items: [BuildItem]
+    private var modelContext: ModelContext
+    private(set) var items: [BuildingItem] = []
     
-    init(items: [BuildItem]) {
-        self.items = items
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+        fetchItems()
+    }
+    
+    private func fetchItems() {
+        let descriptor = FetchDescriptor<BuildingItem>()
+        guard let models = try? modelContext.fetch(descriptor) else { return }
+        Task { @MainActor in
+            self.items = models
+        }
+    }
+    
+    func addItem(_ item: BuildingItem) {
+        modelContext.insert(item)
+        items.append(item)
     }
     
     func fallAndClear() async {
         withAnimation(.easeIn(duration: 1)) {
             for i in items.indices {
-                items[i].offset.height = 500
+                items[i].offsetY = 500
             }
         }
         try? await Task.sleep(for: .seconds(1))
         items.removeAll()
+        try? modelContext.delete(model: BuildingItem.self)
     }
 }
 
-struct BuildItem: Identifiable, Equatable {
-    let id = UUID()
-    var offset: CGSize = .zero
-    var content: BuildItemContent
-    
-    @ViewBuilder var view: some View {
+extension BuildingItem {
+    var view: some View {
         switch content {
-        case .color(let color, let size): color.frame(width: size.width, height: size.height)
+//        case .color(let color, let size): color.frame(width: size.width, height: size.height)
         case .image(let name): Image(name)
         }
     }
@@ -81,18 +107,19 @@ enum BuildItemContent: Equatable {
 }
 
 #Preview {
-    @Previewable @State var state = BuildState(items: [
-        BuildItem(offset: CGSize(width: 10, height: 50),content: .color(.red, frame: CGSize(width: 100, height: 200))),
-        BuildItem(offset: CGSize(width: 200, height: 170),content: .color(.green, frame: CGSize(width: 100, height: 200))),
-    ])
+    let container = try! ModelContainer(for: BuildingItem.self, configurations: .init(isStoredInMemoryOnly: true))
+    let state = BuildState(modelContext: container.mainContext)
     
     TabView {
         Tab("Build", systemImage: "wrench.and.screwdriver") {
-            BuildScreen(state: state)
+            BuildScreen()
         }
         Tab("Home", systemImage: "house") {}
     }
-    .onChange(of: state.items) {
-        print(state.items)
-    }
+    .modelContainer(container)
+//    .onAppear {
+//        print("onappear")
+//        state.addItem(BuildingItem(content: .image(name: "coin"), offsetX: 2, offsetY: 0, zIndex: 1))
+//        state.addItem(BuildingItem(content: .image(name: "coin"), offsetX: 100, offsetY: 100, zIndex: 1))
+//    }
 }
