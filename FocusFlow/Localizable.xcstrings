@@ -49,6 +49,12 @@
       },
       "shouldTranslate" : false
     },
+    "🔺 Triangle" : {
+
+    },
+    "🟥 Rectangle" : {
+
+    },
     "1-minute Break Pass" : {
       "localizations" : {
         "zh-Hans" : {
@@ -79,7 +85,16 @@
         }
       }
     },
+    "Add an object to the Build tab. Build your own house, city, shop, anything you want!" : {
+
+    },
+    "Add something..." : {
+
+    },
     "Build" : {
+
+    },
+    "Build!" : {
 
     },
     "Coins" : {
@@ -108,7 +123,13 @@
         }
       }
     },
+    "Color" : {
+
+    },
     "Coral App Icon" : {
+
+    },
+    "Delete" : {
 
     },
     "Delete this session" : {
@@ -160,6 +181,9 @@
         }
       }
     },
+    "It won't happen again!" : {
+
+    },
     "Last session" : {
       "localizations" : {
         "zh-Hans" : {
@@ -186,6 +210,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "金币不足！"
+          }
+        }
+      }
+    },
+    "Objects: %lld of %lld total" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Objects: %1$lld of %2$lld total"
           }
         }
       }
@@ -269,9 +303,6 @@
         }
       }
     },
-    "This won't happen again..." : {
-
-    },
     "Time" : {
       "localizations" : {
         "zh-Hans" : {
@@ -353,7 +384,7 @@
         }
       }
     },
-    "You failed a focus session, and everything you've built crumbled to ashes... Better luck next time :(" : {
+    "You failed a focus session, and everything you've built fell to ashes... Better luck next time :(" : {
 
     },
     "You failed..." : {

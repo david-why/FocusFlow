@@ -61,7 +61,8 @@ struct BuildScreen: View {
     }
     
     func addRectangleAction() {
-        modelContext.insert(BuildingItem(content: .rect(width: 100, height: 100, rotation: 0, color: .red), offsetX: 0, offsetY: 0, zIndex: 0))
+        print("adding rectangle")
+        modelContext.insert(BuildingItem(content: .rect(color: .red), offsetX: 0, offsetY: 0, zIndex: 0, width: 100, height: 100, rotation: 0))
     }
     
     func addTriangleAction() {
@@ -84,12 +85,12 @@ struct BuildCanvas: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            Color.white
-                .frame(height: 400)
+            Color.clear
             ForEach(items) { item in
                 BuildItemView(item: item)
             }
         }
+        .frame(height: 400)
     }
 }
 
@@ -100,40 +101,84 @@ struct BuildItemView: View {
     
     @State private var dragStartOffset: CGSize? = nil
     @State private var isPopoverOpen = false
+    @State private var isResizing = false
+    @State private var resizeStartSize: CGSize? = nil
     
     var body: some View {
         item.view
-            .popover(isPresented: $isPopoverOpen) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Button("Delete", role: .destructive) {
-                        deleteItem()
-                        
+            .popover(isPresented: $isPopoverOpen, attachmentAnchor: .rect(.bounds)) {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Button("Delete", role: .destructive) {
+                            deleteItem()
+                        }
+                        .buttonStyle(.bordered)
+                        Button("Resize") {
+                            resizeItem()
+                        }
+                        .buttonStyle(.bordered)
                     }
                     if hasColor {
                         ColorPicker("Color", selection: colorBinding)
                     }
                 }
                 .presentationCompactAdaptation(.popover)
-                .padding(.horizontal)
+                .padding()
+            }
+            .overlay(alignment: .bottomTrailing) {
+                if isResizing {
+                    resizeHandle
+                }
             }
             .offset(x: item.offsetX, y: item.offsetY)
             .zIndex(item.zIndex)
-            .onTapGesture(perform: onTap)
+            .onTapGesture(perform: resizeItem)
+            .onLongPressGesture(perform: openMenu)
             .gesture(drag)
+    }
+    
+    @ViewBuilder var resizeHandle: some View {
+        GeometryReader { proxy in
+            Circle()
+                .fill(.blue)
+                .frame(width: 8, height: 8)
+                .position(x: item.width, y: item.height)
+                .gesture(resize)
+        }
     }
     
     var drag: some Gesture {
         DragGesture()
             .onChanged { value in
+                print("Drag changed \(value.translation)")
                 if let dragStartOffset {
-                    item.offsetX = dragStartOffset.width + value.translation.width
+                    item.offsetX = dragStartOffset.width + value.location.x - value.startLocation.x
                     item.offsetY = dragStartOffset.height + value.translation.height
                 } else {
                     dragStartOffset = CGSize(width: item.offsetX, height: item.offsetY)
                 }
             }
             .onEnded { _ in
+                print("Drag ended")
                 dragStartOffset = nil
+            }
+    }
+    
+    var resize: some Gesture {
+        DragGesture()
+            .onChanged { value in
+                print("Resize changed \(value.translation)")
+                if let resizeStartSize {
+                    item.width = resizeStartSize.width + value.translation.width
+                    item.height = resizeStartSize.height + value.translation.height
+                } else {
+                    resizeStartSize = CGSize(width: item.width, height: item.height)
+                }
+            }
+            .onEnded { value in
+                print("Resize ended")
+                resizeStartSize = nil
+                isResizing = false
             }
     }
     
@@ -147,22 +192,22 @@ struct BuildItemView: View {
     var colorBinding: Binding<Color> {
         Binding {
             switch item.content {
-            case .rect(_, _, _, let color):
+            case .rect(let color):
                 color.color
             default:
                 Color.clear
             }
         } set: { color in
             switch item.content {
-            case let .rect(width, height, rotation, _):
-                item.content = .rect(width: width, height: height, rotation: rotation, color: .init(color))
+            case .rect:
+                item.content = .rect(color: .init(color))
             default:
                 break
             }
         }
     }
     
-    func onTap() {
+    func openMenu() {
         isPopoverOpen.toggle()
     }
     
@@ -170,15 +215,22 @@ struct BuildItemView: View {
         print("Deleting item \(item)")
         modelContext.delete(item)
     }
+    
+    func resizeItem() {
+        isResizing.toggle()
+        isPopoverOpen = false
+    }
 }
 
 extension BuildingItem {
     @ViewBuilder var view: some View {
         switch content {
-//        case .color(let color, let size): color.frame(width: size.width, height: size.height)
         case .image(let name):
             Image(name)
-        case .rect(let width, let height, let rotation, let color): Rectangle()
+                .frame(width: width, height: height)
+                .rotationEffect(.degrees(rotation))
+        case .rect(let color):
+            Rectangle()
                 .frame(width: width, height: height)
                 .rotationEffect(.degrees(rotation))
                 .foregroundStyle(color.color)

@@ -102,6 +102,8 @@ struct HomeScreen: View {
     @AppStorage("is_current_failing") var isFailing = false
     @AppStorage("current_fail_time") var failTime = Date.distantPast
     @AppStorage("current_fail_start_date") var failStartDate = Date.distantPast
+    
+    @AppStorage("hasFailedBuild") var hasFailedBuild = false
 
     // MARK: - Timer state
     
@@ -308,6 +310,7 @@ struct HomeScreen: View {
         modelContext.insert(session)
         coins -= coinsLost // TODO: Extract to its own function
         isPresentingFailed = true
+        hasFailedBuild = true
     }
     
     // MARK: - Actions

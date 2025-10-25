@@ -15,11 +15,11 @@ struct FocusFlowApp: App {
     init() {
         do {
             container = try ModelContainer(
-                for: FocusSession.self, ReminderTask.self,
+                for: FocusSession.self, ReminderTask.self, BuildingItem.self,
                 migrationPlan: MigrationPlan.self
             )
         } catch {
-            container = try! ModelContainer(for: FocusSession.self, ReminderTask.self)
+            container = try! ModelContainer(for: FocusSession.self, ReminderTask.self, BuildingItem.self)
         }
     }
     

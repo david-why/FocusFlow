@@ -46,6 +46,6 @@ struct ContentView: View {
             context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759332600), duration: 3600, coins: 10, actualDuration: 3600))
             context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759339800), duration: 3600, coins: 30, actualDuration: 3600))
             UserDefaults.standard.set(1000, forKey: "coins")
-            context.insert(BuildingItem(content: .image(name: "coin"), offsetX: 0, offsetY: 0, zIndex: 1))
+            context.insert(BuildingItem(content: .rect(color: .red), offsetX: 0, offsetY: 0, zIndex: 1, width: 100, height: 100, rotation: 0))
         }
 }

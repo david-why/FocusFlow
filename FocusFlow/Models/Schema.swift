@@ -92,18 +92,24 @@ enum SchemaV2: VersionedSchema {
         var offsetX: Double
         var offsetY: Double
         var zIndex: Double
+        var width: Double
+        var height: Double
+        var rotation: Double
         
-        init(content: BuildingItemContent, offsetX: Double, offsetY: Double, zIndex: Double) {
+        init(content: BuildingItemContent, offsetX: Double, offsetY: Double, zIndex: Double, width: Double, height: Double, rotation: Double) {
             self.content = content
             self.offsetX = offsetX
             self.offsetY = offsetY
             self.zIndex = zIndex
+            self.width = width
+            self.height = height
+            self.rotation = rotation
         }
     }
     
     enum BuildingItemContent: Codable {
         case image(name: String)
-        case rect(width: Double, height: Double, rotation: Double, color: RGBColor)
+        case rect(color: RGBColor)
     }
     
     struct RGBColor: Codable {
