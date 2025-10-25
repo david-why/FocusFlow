@@ -135,3 +135,4 @@ typealias CurrentSchema = SchemaV2
 typealias FocusSession = CurrentSchema.FocusSession
 typealias ReminderTask = CurrentSchema.ReminderTask
 typealias BuildingItem = CurrentSchema.BuildingItem
+typealias BuildingItemContent = CurrentSchema.BuildingItemContent

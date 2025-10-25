@@ -10,7 +10,13 @@ import SwiftData
 
 struct BuildScreen: View {
     @Environment(\.modelContext) var modelContext
+    @Environment(StoreService.self) var storeService
+    
+    @AppStorage("hasFailedBuild") var hasFailedBuild = false
+    
     @Query var items: [BuildingItem]
+    
+    @State var isPresentingFailedAlert = false
     
     var body: some View {
         NavigationStack {
@@ -18,17 +24,24 @@ struct BuildScreen: View {
                 BuildCanvas()
                 
                 Section {
-                    Button("Fall") {
-                        Task {
-                            await fallAndClear()
-                        }
+                    Button("Failed", role: .destructive) {
+                        hasFailedBuild = true
                     }
                 }
             }
             .navigationTitle("Build")
         }
-        .onChange(of: items) {
-            debugPrint(items)
+        .task {
+            if hasFailedBuild {
+                isPresentingFailedAlert = true
+                await fallAndClear()
+                hasFailedBuild = false
+            }
+        }
+        .alert("You have failed...", isPresented: $isPresentingFailedAlert) {
+            Button("It won't happen again!") {}
+        } message: {
+            Text("You failed a focus session, and everything you've built fell to ashes... Better luck next time :(")
         }
     }
     
@@ -58,7 +71,7 @@ struct BuildCanvas: View {
 }
 
 struct BuildItemView: View {
-    @Bindable var item: BuildingItem
+    let item: BuildingItem
     
     @State private var dragStartOffset: CGSize? = nil
     
@@ -96,11 +109,6 @@ extension BuildingItem {
     }
 }
 
-enum BuildItemContent: Equatable {
-    case color(Color, frame: CGSize)
-    case image(name: String)
-}
-
 #Preview {
     let container = try! ModelContainer(for: BuildingItem.self, configurations: .init(isStoredInMemoryOnly: true))
     let context = container.mainContext
@@ -112,8 +120,9 @@ enum BuildItemContent: Equatable {
         Tab("Home", systemImage: "house") {}
     }
     .modelContainer(container)
+    .environment(StoreService())
     .onAppear {
         context.insert(BuildingItem(content: .image(name: "coin"), offsetX: 0, offsetY: 0, zIndex: 1))
-        context.insert(BuildingItem(content: .image(name: "coin"), offsetX: 0, offsetY: 0, zIndex: 1))
+        context.insert(BuildingItem(content: .image(name: "coin"), offsetX: 100, offsetY: 0, zIndex: 1))
     }
 }

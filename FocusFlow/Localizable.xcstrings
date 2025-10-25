@@ -79,6 +79,9 @@
         }
       }
     },
+    "Build" : {
+
+    },
     "Coins" : {
       "localizations" : {
         "zh-Hans" : {
@@ -129,6 +132,9 @@
       }
     },
     "Emerald App Icon" : {
+
+    },
+    "Failed" : {
 
     },
     "Focus!" : {
@@ -263,6 +269,9 @@
         }
       }
     },
+    "This won't happen again..." : {
+
+    },
     "Time" : {
       "localizations" : {
         "zh-Hans" : {
@@ -344,6 +353,9 @@
         }
       }
     },
+    "You failed a focus session, and everything you've built crumbled to ashes... Better luck next time :(" : {
+
+    },
     "You failed..." : {
       "localizations" : {
         "zh-Hans" : {
@@ -387,6 +399,9 @@
           }
         }
       }
+    },
+    "You have failed..." : {
+
     },
     "You have left this page... You lost 50% of your coins." : {
       "localizations" : {
