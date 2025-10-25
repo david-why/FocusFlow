@@ -13,10 +13,11 @@ enum ContentTab {
     case sessions
     case store
     case build
+    case settings
 }
 
 struct ContentView: View {
-    @State var tab: ContentTab = .build  // TODO: Change this back to .home
+    @State var tab: ContentTab = .settings  // TODO: Change this back to .home
     
     var body: some View {
         TabView(selection: $tab) {
@@ -31,6 +32,9 @@ struct ContentView: View {
             }
             Tab("Build", systemImage: "wrench.and.screwdriver", value: ContentTab.build) {
                 BuildScreen()
+            }
+            Tab("Settings", systemImage: "gear", value: ContentTab.settings) {
+                SettingsScreen()
             }
         }
     }

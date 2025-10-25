@@ -27,6 +27,7 @@ struct FocusFlowApp: App {
         WindowGroup {
             ContentView()
                 .environment(StoreService())
+                .environment(SlackService())
         }
         .modelContainer(container)
     }

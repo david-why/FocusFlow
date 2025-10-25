@@ -75,6 +75,9 @@
         }
       }
     },
+    "A test message was successfully sent to the specified channel!" : {
+
+    },
     "Actual duration" : {
       "localizations" : {
         "zh-Hans" : {
@@ -88,6 +91,9 @@
     "Add something..." : {
 
     },
+    "An error occurred" : {
+
+    },
     "Are you sure? This cannot be undone." : {
 
     },
@@ -98,6 +104,9 @@
 
     },
     "Cancel" : {
+
+    },
+    "Channel ID" : {
 
     },
     "Coins" : {
@@ -162,6 +171,9 @@
       }
     },
     "Emerald App Icon" : {
+
+    },
+    "Enter a bot or user OAuth token and a channel to automatically post a message when you start focusing and complete a session. Check out [the Slack docs](https://api.slack.com) if you need help. The minimum required scope is `chat:write`." : {
 
     },
     "Focus!" : {
@@ -295,6 +307,9 @@
     "Resize" : {
 
     },
+    "Send a test message" : {
+
+    },
     "Sessions" : {
       "localizations" : {
         "zh-Hans" : {
@@ -305,6 +320,12 @@
         }
       }
     },
+    "Settings" : {
+
+    },
+    "Slack Integration" : {
+
+    },
     "Store" : {
       "localizations" : {
         "zh-Hans" : {
@@ -314,6 +335,9 @@
           }
         }
       }
+    },
+    "Success!" : {
+
     },
     "Time" : {
       "localizations" : {
@@ -385,6 +409,9 @@
           }
         }
       }
+    },
+    "xoxb-/xoxp- API Key" : {
+
     },
     "You did it!" : {
       "localizations" : {
