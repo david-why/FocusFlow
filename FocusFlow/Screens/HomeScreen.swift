@@ -13,6 +13,7 @@ struct HomeScreen: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.scenePhase) var scenePhase
     @Environment(StoreService.self) var storeService
+    @Environment(SlackService.self) var slackService
     
     var body: some View {
         Spacer()
@@ -256,12 +257,16 @@ struct HomeScreen: View {
     func timerDidExpire() {
         guard let timerStartDate else { return }
         let coinsWon = calculateCoins()
-        let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: coinsWon, actualDuration: timerSetting - timerDistractedTime)
+        let actualTime = timerSetting - timerDistractedTime
+        let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: coinsWon, actualDuration: actualTime)
         modelContext.insert(session) // TODO: Extract to its own function
         coins += coinsWon
         self.timerStartDate = nil
         lastCoinGain = coinsWon
         isPresentingCongrats = true
+        Task {
+            try? await slackService.postMessage("FocusFlow: Completed focus session!\n* Actual focus time: \(actualTime.formatted(.timeInterval))\n* Coins earned: \(coinsWon)")
+        }
     }
     
     /// The user left the app.
@@ -278,39 +283,40 @@ struct HomeScreen: View {
     func penalizeUser() {
         guard isFailing else { return }
         isFailing = false
-        var shouldPenalize = true
         let distractionEndDate = min(Date.now, failStartDate + timerSetting)
         // Use the passes
         if distractionEndDate.timeIntervalSince(failTime) <= 60 {
             let passes = storeService.items(of: "break-1")
             if let pass = passes.first {
                 storeService.delete(pass)
-                shouldPenalize = false
                 isPresentingSaved = true
                 savedPassName = "1-minute Break Pass"
                 timerDistractedTime += distractionEndDate.timeIntervalSince(failTime)
                 timerStartDate = failStartDate
+                return
             }
         }
-        guard shouldPenalize else { return }
         if distractionEndDate.timeIntervalSince(failTime) <= 300 {
             let passes = storeService.items(of: "break-5")
             if let pass = passes.first {
                 storeService.delete(pass)
-                shouldPenalize = false
                 isPresentingSaved = true
                 savedPassName = "5-minute Break Pass"
                 timerDistractedTime += distractionEndDate.timeIntervalSince(failTime)
                 timerStartDate = failStartDate
+                return
             }
         }
-        guard shouldPenalize else { return }
         let coinsLost = (coins + 1) / 2
-        let session = FocusSession(startDate: failStartDate, duration: timerSetting, coins: -coinsLost, actualDuration: failTime.timeIntervalSince(failStartDate), failed: true)
+        let actualTime = failTime.timeIntervalSince(failStartDate) - timerDistractedTime
+        let session = FocusSession(startDate: failStartDate, duration: timerSetting, coins: -coinsLost, actualDuration: actualTime, failed: true)
         modelContext.insert(session)
         coins -= coinsLost // TODO: Extract to its own function
         isPresentingFailed = true
         hasFailedBuild = true
+        Task {
+            try? await slackService.postMessage("FocusFlow: Failed focus session...\n* Actual focus time: \(actualTime.formatted(.timeInterval))")
+        }
     }
     
     // MARK: - Actions
@@ -322,6 +328,9 @@ struct HomeScreen: View {
         } else {
             timerDistractedTime = 0
             timerStartDate = Date.now
+            Task {
+                try? await slackService.postMessage("FocusFlow: Started focus session for \(timerSetting.formatted(.timeInterval))")
+            }
         }
     }
     
@@ -345,6 +354,8 @@ struct HomeScreen: View {
 #Preview {
     let container = try! ModelContainer(for: FocusSession.self, configurations: .init(isStoredInMemoryOnly: true))
     HomeScreen()
+        .environment(StoreService())
+        .environment(SlackService())
         .modelContainer(container)
         .task {
             let context = container.mainContext
