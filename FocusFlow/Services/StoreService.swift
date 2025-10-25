@@ -43,7 +43,7 @@ class StoreService {
     private var observation: NSKeyValueObservation? = nil
     
     let storeItems = [
-        StoreItem(id: "build-item", name: "Build!", description: "Add an object to the Build tab. Build your own house, city, shop, anything you want!", price: 30),
+        StoreItem(id: "build-item", name: "Build!", description: "Let you add an object to the Build tab. Build your own house, shop, city, anything you want!", price: 30),
         StoreItem(id: "break-1", name: "1-minute Break Pass", description: "Use this pass to take a 1 minute break on your phone in a focus session! Automatically applied when you leave the app.", price: 30),
         StoreItem(id: "break-5", name: "5-minute Break Pass", description: "Use this pass to take a 5 minute break on your phone in a focus session! Automatically applied when you leave the app.", price: 200),
         StoreItem(id: "icon-rainbow", name: "Rainbow App Icon", description: "Unlock the Rainbow app icon, joyful and diverse like a burst of color!", price: 60, image: "icon_rainbow", special: .appIcon(name: "AppIconRainbow"), single: true),

@@ -85,16 +85,19 @@
         }
       }
     },
-    "Add an object to the Build tab. Build your own house, city, shop, anything you want!" : {
+    "Add something..." : {
 
     },
-    "Add something..." : {
+    "Are you sure? This cannot be undone." : {
 
     },
     "Build" : {
 
     },
     "Build!" : {
+
+    },
+    "Cancel" : {
 
     },
     "Coins" : {
@@ -132,6 +135,12 @@
     "Delete" : {
 
     },
+    "Delete all items" : {
+
+    },
+    "Delete everything?" : {
+
+    },
     "Delete this session" : {
       "localizations" : {
         "zh-Hans" : {
@@ -153,9 +162,6 @@
       }
     },
     "Emerald App Icon" : {
-
-    },
-    "Failed" : {
 
     },
     "Focus!" : {
@@ -193,6 +199,9 @@
           }
         }
       }
+    },
+    "Let you add an object to the Build tab. Build your own house, shop, city, anything you want!" : {
+
     },
     "No sessions yet. Start focusing!" : {
       "localizations" : {
@@ -281,6 +290,9 @@
 
     },
     "Reset app icon" : {
+
+    },
+    "Resize" : {
 
     },
     "Sessions" : {

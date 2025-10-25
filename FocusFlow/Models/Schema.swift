@@ -9,6 +9,41 @@ import Foundation
 import SwiftData
 import SwiftUI
 
+struct RGBColor: Codable {
+    var red: Double
+    var green: Double
+    var blue: Double
+    var opacity: Double
+    
+    init(red: Double, green: Double, blue: Double, opacity: Double) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+        self.opacity = opacity
+    }
+    
+    init(_ color: Color) {
+        let uiColor = UIColor(color)
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var opacity: CGFloat = 0
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &opacity)
+        self.init(red: red, green: green, blue: blue, opacity: opacity)
+    }
+    
+    static let black = RGBColor(red: 0, green: 0, blue: 0, opacity: 1)
+    static let red = RGBColor(red: 1, green: 0.2196, blue: 0.2353, opacity: 1)
+    
+    static var random: RGBColor {
+        RGBColor(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1), opacity: 0)
+    }
+    
+    var color: Color {
+        Color(red: red, green: green, blue: blue, opacity: opacity)
+    }
+}
+
 enum SchemaV1: VersionedSchema {
     static var versionIdentifier = Schema.Version(1, 0, 0)
     
@@ -112,34 +147,6 @@ enum SchemaV2: VersionedSchema {
         case rect(color: RGBColor)
         case triangle(color: RGBColor)
     }
-    
-    struct RGBColor: Codable {
-        var red: Double
-        var green: Double
-        var blue: Double
-        
-        init(red: Double, green: Double, blue: Double) {
-            self.red = red
-            self.green = green
-            self.blue = blue
-        }
-        
-        init(_ color: Color) {
-            let uiColor = UIColor(color)
-            var red: CGFloat = 0
-            var green: CGFloat = 0
-            var blue: CGFloat = 0
-            uiColor.getRed(&red, green: &green, blue: &blue, alpha: nil)
-            self.init(red: red, green: green, blue: blue)
-        }
-        
-        static let black = RGBColor(red: 0, green: 0, blue: 0)
-        static let red = RGBColor(red: 1, green: 0.2196, blue: 0.2353)
-        
-        var color: Color {
-            Color(red: red, green: green, blue: blue)
-        }
-    }
 }
 
 enum MigrationPlan: SchemaMigrationPlan {
@@ -173,4 +180,3 @@ typealias FocusSession = CurrentSchema.FocusSession
 typealias ReminderTask = CurrentSchema.ReminderTask
 typealias BuildingItem = CurrentSchema.BuildingItem
 typealias BuildingItemContent = CurrentSchema.BuildingItemContent
-typealias RGBColor = CurrentSchema.RGBColor

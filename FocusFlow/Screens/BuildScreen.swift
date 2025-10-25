@@ -27,9 +27,14 @@ struct BuildScreen: View {
                 
                 Section {
                     Text("Objects: \(items.count) of \(totalObjects) total")
-                    Menu("Add something...") {
+                    Menu {
                         Button("🟥 Rectangle", action: addRectangleAction)
                         Button("🔺 Triangle", action: addTriangleAction)
+                    } label: {
+                        HStack {
+                            Text("Add something...")
+                            Spacer()
+                        }
                     }
                     .disabled(items.count >= totalObjects)
                     Button("Delete all items", role: .destructive, action: clearItems)
@@ -37,7 +42,7 @@ struct BuildScreen: View {
             }
             .navigationTitle("Build")
         }
-        .onChange(of: hasFailedBuild, initial: true, checkHasFailed)
+        .onAppear(perform: checkHasFailed)
         .alert("You have failed...", isPresented: $isPresentingFailedAlert) {
             Button("It won't happen again!") {}
         } message: {
@@ -67,11 +72,11 @@ struct BuildScreen: View {
     
     func addRectangleAction() {
         print("adding rectangle")
-        modelContext.insert(BuildingItem(content: .rect(color: .red), offsetX: 0, offsetY: 0, zIndex: 0, width: 100, height: 100, rotation: 0))
+        modelContext.insert(BuildingItem(content: .rect(color: .random), offsetX: 0, offsetY: 0, zIndex: 0, width: 100, height: 100, rotation: 0))
     }
     
     func addTriangleAction() {
-        modelContext.insert(BuildingItem(content: .triangle(color: .red), offsetX: 0, offsetY: 0, zIndex: 0, width: 100, height: 100, rotation: 0))
+        modelContext.insert(BuildingItem(content: .triangle(color: .random), offsetX: 0, offsetY: 0, zIndex: 0, width: 100, height: 100, rotation: 0))
     }
     
     func clearItems() {
@@ -145,8 +150,7 @@ struct BuildItemView: View {
             }
             .offset(x: item.offsetX, y: item.offsetY)
             .zIndex(item.zIndex)
-            .onTapGesture(perform: resizeItem)
-            .onLongPressGesture(perform: openMenu)
+            .onTapGesture(perform: openMenu)
             .gesture(drag)
     }
     
@@ -197,8 +201,9 @@ struct BuildItemView: View {
     
     var hasColor: Bool {
         switch item.content {
-        case .image: false
-        default: true
+        case .rect: true
+        case .triangle: true
+        default: false
         }
     }
     
@@ -207,6 +212,8 @@ struct BuildItemView: View {
             switch item.content {
             case .rect(let color):
                 color.color
+            case .triangle(let color):
+                color.color
             default:
                 Color.clear
             }
@@ -214,6 +221,8 @@ struct BuildItemView: View {
             switch item.content {
             case .rect:
                 item.content = .rect(color: .init(color))
+            case .triangle:
+                item.content = .triangle(color: .init(color))
             default:
                 break
             }
@@ -258,8 +267,7 @@ extension BuildingItem {
 
 #Preview {
     let container = try! ModelContainer(for: BuildingItem.self, configurations: .init(isStoredInMemoryOnly: true))
-    let context = container.mainContext
-    
+
     TabView {
         Tab("Build", systemImage: "wrench.and.screwdriver") {
             BuildScreen()
@@ -268,8 +276,4 @@ extension BuildingItem {
     }
     .modelContainer(container)
     .environment(StoreService())
-    .onAppear {
-//        context.insert(BuildingItem(content: .image(name: "coin"), offsetX: 0, offsetY: 0, zIndex: 1))
-//        context.insert(BuildingItem(content: .image(name: "coin"), offsetX: 100, offsetY: 0, zIndex: 1))
-    }
 }
