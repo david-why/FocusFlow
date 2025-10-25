@@ -33,7 +33,6 @@ struct StoreItem: Identifiable {
     enum StoreItemSpecial {
         case none
         case appIcon(name: String)
-        case build(content: BuildingItemContent)
     }
 }
 
@@ -46,6 +45,7 @@ class StoreService {
     let storeItems = [
         StoreItem(id: "break-1", name: "1-minute Break Pass", description: "Use this pass to take a 1 minute break on your phone in a focus session! Automatically applied when you leave the app.", price: 30),
         StoreItem(id: "break-5", name: "5-minute Break Pass", description: "Use this pass to take a 5 minute break on your phone in a focus session! Automatically applied when you leave the app.", price: 200),
+        StoreItem(id: "build-item", name: "Build!", description: "Add an object to the Build tab. Build your own house, city, shop, anything you want!", price: 30),
         StoreItem(id: "icon-rainbow", name: "Rainbow App Icon", description: "Unlock the Rainbow app icon, joyful and diverse like a burst of color!", price: 60, image: "icon_rainbow", special: .appIcon(name: "AppIconRainbow"), single: true),
         StoreItem(id: "icon-coral", name: "Coral App Icon", description: "Unlock the Coral app icon, vibrant and warm like an ocean sunset!", price: 60, image: "icon_coral", special: .appIcon(name: "AppIconCoral"), single: true),
         StoreItem(id: "icon-frost", name: "Frost App Icon", description: "Unlock the Frost app icon, cool and crisp like a winter morning!", price: 60, image: "icon_frost", special: .appIcon(name: "AppIconFrost"), single: true),
@@ -84,18 +84,6 @@ class StoreService {
     func delete(_ item: OwnedItem) {
         ownedItems.removeAll { $0.id == item.id }
         saveOwnedItems()
-    }
-    
-    var buildItems: [OwnedItem] {
-        ownedItems.filter { item in
-            guard let storeItem = storeItems.first(where: { $0.id == item.itemID }) else {
-                return false
-            }
-            switch storeItem.special {
-            case .build(_): return true
-            default: return false
-            }
-        }
     }
     
     @MainActor private func loadOwnedItems() {

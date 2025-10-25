@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import SwiftUI
 
 enum SchemaV1: VersionedSchema {
     static var versionIdentifier = Schema.Version(1, 0, 0)
@@ -90,9 +91,9 @@ enum SchemaV2: VersionedSchema {
         var content: BuildingItemContent
         var offsetX: Double
         var offsetY: Double
-        var zIndex: Int
+        var zIndex: Double
         
-        init(content: BuildingItemContent, offsetX: Double, offsetY: Double, zIndex: Int) {
+        init(content: BuildingItemContent, offsetX: Double, offsetY: Double, zIndex: Double) {
             self.content = content
             self.offsetX = offsetX
             self.offsetY = offsetY
@@ -102,6 +103,35 @@ enum SchemaV2: VersionedSchema {
     
     enum BuildingItemContent: Codable {
         case image(name: String)
+        case rect(width: Double, height: Double, rotation: Double, color: RGBColor)
+    }
+    
+    struct RGBColor: Codable {
+        var red: Double
+        var green: Double
+        var blue: Double
+        
+        init(red: Double, green: Double, blue: Double) {
+            self.red = red
+            self.green = green
+            self.blue = blue
+        }
+        
+        init(_ color: Color) {
+            let uiColor = UIColor(color)
+            var red: CGFloat = 0
+            var green: CGFloat = 0
+            var blue: CGFloat = 0
+            uiColor.getRed(&red, green: &green, blue: &blue, alpha: nil)
+            self.init(red: red, green: green, blue: blue)
+        }
+        
+        static let black = RGBColor(red: 0, green: 0, blue: 0)
+        static let red = RGBColor(red: 1, green: 0.2196, blue: 0.2353)
+        
+        var color: Color {
+            Color(red: red, green: green, blue: blue)
+        }
     }
 }
 
@@ -136,3 +166,4 @@ typealias FocusSession = CurrentSchema.FocusSession
 typealias ReminderTask = CurrentSchema.ReminderTask
 typealias BuildingItem = CurrentSchema.BuildingItem
 typealias BuildingItemContent = CurrentSchema.BuildingItemContent
+typealias RGBColor = CurrentSchema.RGBColor
