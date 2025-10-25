@@ -36,7 +36,7 @@ struct RGBColor: Codable {
     static let red = RGBColor(red: 1, green: 0.2196, blue: 0.2353, opacity: 1)
     
     static var random: RGBColor {
-        RGBColor(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1), opacity: 0)
+        RGBColor(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1), opacity: 1)
     }
     
     var color: Color {

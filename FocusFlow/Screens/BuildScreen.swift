@@ -38,6 +38,7 @@ struct BuildScreen: View {
                     }
                     .disabled(items.count >= totalObjects)
                     Button("Delete all items", role: .destructive, action: clearItems)
+                        .disabled(items.isEmpty)
                 }
             }
             .navigationTitle("Build")
@@ -72,11 +73,11 @@ struct BuildScreen: View {
     
     func addRectangleAction() {
         print("adding rectangle")
-        modelContext.insert(BuildingItem(content: .rect(color: .random), offsetX: 0, offsetY: 0, zIndex: 0, width: 100, height: 100, rotation: 0))
+        modelContext.insert(BuildingItem(content: .rect(color: .random), offsetX: 100, offsetY: 100, zIndex: 0, width: 100, height: 100, rotation: 0))
     }
     
     func addTriangleAction() {
-        modelContext.insert(BuildingItem(content: .triangle(color: .random), offsetX: 0, offsetY: 0, zIndex: 0, width: 100, height: 100, rotation: 0))
+        modelContext.insert(BuildingItem(content: .triangle(color: .random), offsetX: 100, offsetY: 100, zIndex: 0, width: 100, height: 100, rotation: 0))
     }
     
     func clearItems() {
@@ -84,7 +85,7 @@ struct BuildScreen: View {
     }
     
     func confirmClearItems() {
-        try? modelContext.delete(model: BuildingItem.self)
+        items.forEach(modelContext.delete)
     }
     
     func fallAndClear() async {
@@ -117,41 +118,54 @@ struct BuildItemView: View {
     
     @Environment(\.modelContext) private var modelContext
     
-    @State private var dragStartOffset: CGSize? = nil
     @State private var isPopoverOpen = false
+    @State private var dragStartOffset: CGSize? = nil
     @State private var isResizing = false
     @State private var resizeStartSize: CGSize? = nil
+    @State private var rotateStartAngle: Double? = nil
     
     var body: some View {
         item.view
             .popover(isPresented: $isPopoverOpen, attachmentAnchor: .rect(.bounds)) {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Button("Delete", role: .destructive) {
-                            deleteItem()
-                        }
-                        .buttonStyle(.bordered)
-                        Button("Resize") {
-                            resizeItem()
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                    if hasColor {
-                        ColorPicker("Color", selection: colorBinding)
-                    }
-                }
-                .presentationCompactAdaptation(.popover)
-                .padding()
+                popoverView
+                    .presentationCompactAdaptation(.popover)
+                    .padding()
             }
             .overlay(alignment: .bottomTrailing) {
                 if isResizing {
                     resizeHandle
                 }
             }
-            .offset(x: item.offsetX, y: item.offsetY)
+            .position(x: item.offsetX, y: item.offsetY)
             .zIndex(item.zIndex)
             .onTapGesture(perform: openMenu)
             .gesture(drag)
+            .gesture(rotate)
+    }
+    
+    @ViewBuilder var popoverView: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Button("Delete", role: .destructive) {
+                    deleteItem()
+                }
+                .buttonStyle(.bordered)
+                Button("Resize") {
+                    resizeItem()
+                }
+                .buttonStyle(.bordered)
+            }
+            if hasColor {
+                ColorPicker("Color", selection: colorBinding)
+            }
+            LabeledContent {
+                Slider(value: $item.zIndex, in: 0...100)
+                    .labelsHidden()
+            } label: {
+                Text("Layer")
+            }
+        }
+        .frame(width: 300)
     }
     
     @ViewBuilder var resizeHandle: some View {
@@ -167,7 +181,6 @@ struct BuildItemView: View {
     var drag: some Gesture {
         DragGesture()
             .onChanged { value in
-                print("Drag changed \(value.translation)")
                 if let dragStartOffset {
                     item.offsetX = dragStartOffset.width + value.location.x - value.startLocation.x
                     item.offsetY = dragStartOffset.height + value.translation.height
@@ -175,16 +188,35 @@ struct BuildItemView: View {
                     dragStartOffset = CGSize(width: item.offsetX, height: item.offsetY)
                 }
             }
-            .onEnded { _ in
-                print("Drag ended")
+            .onEnded { value in
+                if let dragStartOffset {
+                    item.offsetX = dragStartOffset.width + value.location.x - value.startLocation.x
+                    item.offsetY = dragStartOffset.height + value.translation.height
+                }
                 dragStartOffset = nil
+            }
+    }
+    
+    var rotate: some Gesture {
+        RotateGesture()
+            .onChanged { value in
+                if let rotateStartAngle {
+                    item.rotation = rotateStartAngle + value.rotation.degrees
+                } else {
+                    rotateStartAngle = item.rotation
+                }
+            }
+            .onEnded { value in
+                if let rotateStartAngle {
+                    item.rotation = rotateStartAngle + value.rotation.degrees
+                }
+                rotateStartAngle = nil
             }
     }
     
     var resize: some Gesture {
         DragGesture()
             .onChanged { value in
-                print("Resize changed \(value.translation)")
                 if let resizeStartSize {
                     item.width = max(1, resizeStartSize.width + value.translation.width)
                     item.height = max(1, resizeStartSize.height + value.translation.height)
@@ -193,7 +225,10 @@ struct BuildItemView: View {
                 }
             }
             .onEnded { value in
-                print("Resize ended")
+                if let resizeStartSize {
+                    item.width = max(1, resizeStartSize.width + value.translation.width)
+                    item.height = max(1, resizeStartSize.height + value.translation.height)
+                }
                 resizeStartSize = nil
                 isResizing = false
             }

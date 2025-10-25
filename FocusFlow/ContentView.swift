@@ -17,7 +17,7 @@ enum ContentTab {
 }
 
 struct ContentView: View {
-    @State var tab: ContentTab = .settings  // TODO: Change this back to .home
+    @State var tab: ContentTab = .home
     
     var body: some View {
         TabView(selection: $tab) {
@@ -45,6 +45,7 @@ struct ContentView: View {
     ContentView()
         .modelContainer(container)
         .environment(StoreService())
+        .environment(SlackService())
         .task {
             let context = container.mainContext
             context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759332600), duration: 3600, coins: 10, actualDuration: 3600))
