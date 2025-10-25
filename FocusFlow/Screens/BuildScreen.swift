@@ -18,6 +18,7 @@ struct BuildScreen: View {
     @Query var items: [BuildingItem]
     
     @State var isPresentingFailedAlert = false
+    @State var isPresentingClearAlert = false
     
     var body: some View {
         NavigationStack {
@@ -31,9 +32,7 @@ struct BuildScreen: View {
                         Button("🔺 Triangle", action: addTriangleAction)
                     }
                     .disabled(items.count >= totalObjects)
-                    Button("Failed", role: .destructive) {
-                        hasFailedBuild = true
-                    }
+                    Button("Delete all items", role: .destructive, action: clearItems)
                 }
             }
             .navigationTitle("Build")
@@ -43,6 +42,12 @@ struct BuildScreen: View {
             Button("It won't happen again!") {}
         } message: {
             Text("You failed a focus session, and everything you've built fell to ashes... Better luck next time :(")
+        }
+        .alert("Delete everything?", isPresented: $isPresentingClearAlert) {
+            Button("Delete", role: .destructive, action: confirmClearItems)
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Are you sure? This cannot be undone.")
         }
     }
     
@@ -66,7 +71,15 @@ struct BuildScreen: View {
     }
     
     func addTriangleAction() {
-//        modelContext.insert(BuildingItem(content: .rect(width: 100, height: 100, rotation: 0, color: .red), offsetX: 0, offsetY: 0, zIndex: 0))
+        modelContext.insert(BuildingItem(content: .triangle(color: .red), offsetX: 0, offsetY: 0, zIndex: 0, width: 100, height: 100, rotation: 0))
+    }
+    
+    func clearItems() {
+        isPresentingClearAlert = true
+    }
+    
+    func confirmClearItems() {
+        try? modelContext.delete(model: BuildingItem.self)
     }
     
     func fallAndClear() async {
@@ -169,8 +182,8 @@ struct BuildItemView: View {
             .onChanged { value in
                 print("Resize changed \(value.translation)")
                 if let resizeStartSize {
-                    item.width = resizeStartSize.width + value.translation.width
-                    item.height = resizeStartSize.height + value.translation.height
+                    item.width = max(1, resizeStartSize.width + value.translation.width)
+                    item.height = max(1, resizeStartSize.height + value.translation.height)
                 } else {
                     resizeStartSize = CGSize(width: item.width, height: item.height)
                 }
@@ -231,6 +244,11 @@ extension BuildingItem {
                 .rotationEffect(.degrees(rotation))
         case .rect(let color):
             Rectangle()
+                .frame(width: width, height: height)
+                .rotationEffect(.degrees(rotation))
+                .foregroundStyle(color.color)
+        case .triangle(let color):
+            Triangle()
                 .frame(width: width, height: height)
                 .rotationEffect(.degrees(rotation))
                 .foregroundStyle(color.color)

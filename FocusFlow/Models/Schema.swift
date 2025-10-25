@@ -110,6 +110,7 @@ enum SchemaV2: VersionedSchema {
     enum BuildingItemContent: Codable {
         case image(name: String)
         case rect(color: RGBColor)
+        case triangle(color: RGBColor)
     }
     
     struct RGBColor: Codable {
