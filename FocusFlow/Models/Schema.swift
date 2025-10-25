@@ -146,6 +146,7 @@ enum SchemaV2: VersionedSchema {
         case image(name: String)
         case rect(color: RGBColor)
         case triangle(color: RGBColor)
+        case ellipse(color: RGBColor)
     }
 }
 

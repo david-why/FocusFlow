@@ -30,6 +30,7 @@ struct BuildScreen: View {
                     Menu {
                         Button("🟥 Rectangle", action: addRectangleAction)
                         Button("🔺 Triangle", action: addTriangleAction)
+                        Button("🔴 Ellipse / Circle", action: addEllipseAction)
                     } label: {
                         HStack {
                             Text("Add something...")
@@ -78,6 +79,10 @@ struct BuildScreen: View {
     
     func addTriangleAction() {
         modelContext.insert(BuildingItem(content: .triangle(color: .random), offsetX: 100, offsetY: 100, zIndex: 0, width: 100, height: 100, rotation: 0))
+    }
+    
+    func addEllipseAction() {
+        modelContext.insert(BuildingItem(content: .ellipse(color: .random), offsetX: 100, offsetY: 100, zIndex: 0, width: 100, height: 100, rotation: 0))
     }
     
     func clearItems() {
@@ -238,6 +243,7 @@ struct BuildItemView: View {
         switch item.content {
         case .rect: true
         case .triangle: true
+        case .ellipse: true
         default: false
         }
     }
@@ -249,6 +255,8 @@ struct BuildItemView: View {
                 color.color
             case .triangle(let color):
                 color.color
+            case .ellipse(let color):
+                color.color
             default:
                 Color.clear
             }
@@ -258,6 +266,8 @@ struct BuildItemView: View {
                 item.content = .rect(color: .init(color))
             case .triangle:
                 item.content = .triangle(color: .init(color))
+            case .ellipse:
+                item.content = .ellipse(color: .init(color))
             default:
                 break
             }
@@ -293,6 +303,11 @@ extension BuildingItem {
                 .foregroundStyle(color.color)
         case .triangle(let color):
             Triangle()
+                .frame(width: width, height: height)
+                .rotationEffect(.degrees(rotation))
+                .foregroundStyle(color.color)
+        case .ellipse(let color):
+            Ellipse()
                 .frame(width: width, height: height)
                 .rotationEffect(.degrees(rotation))
                 .foregroundStyle(color.color)
