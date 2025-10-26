@@ -50,13 +50,34 @@
       "shouldTranslate" : false
     },
     "🔴 Ellipse / Circle" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🔴 椭圆 / 圆形"
+          }
+        }
+      }
     },
     "🔺 Triangle" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🔺 三角形"
+          }
+        }
+      }
     },
     "🟥 Rectangle" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🟥 长方形"
+          }
+        }
+      }
     },
     "1-minute Break Pass" : {
       "localizations" : {
@@ -89,25 +110,74 @@
       }
     },
     "Add something..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加一点什么……"
+          }
+        }
+      }
     },
     "An error occurred" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "错误"
+          }
+        }
+      }
     },
     "Are you sure? This cannot be undone." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你确定吗？该操作无法撤销。"
+          }
+        }
+      }
     },
     "Build" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创造"
+          }
+        }
+      }
     },
     "Build!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创造点什么！"
+          }
+        }
+      }
     },
     "Cancel" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        }
+      }
     },
     "Channel ID" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "频道ID"
+          }
+        }
+      }
     },
     "Coins" : {
       "localizations" : {
@@ -136,19 +206,54 @@
       }
     },
     "Color" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "颜色"
+          }
+        }
+      }
     },
     "Coral App Icon" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "珊瑚App图标"
+          }
+        }
+      }
     },
     "Delete" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除"
+          }
+        }
+      }
     },
     "Delete all items" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除所有物品"
+          }
+        }
+      }
     },
     "Delete everything?" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除所有东西？"
+          }
+        }
+      }
     },
     "Delete this session" : {
       "localizations" : {
@@ -171,16 +276,44 @@
       }
     },
     "Emerald App Icon" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翡翠App图标"
+          }
+        }
+      }
     },
     "Emoji (e.g. :pencil:)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图标（比如:pencil:）"
+          }
+        }
+      }
     },
     "Enter a bot or user OAuth token and a channel to automatically post a message when you start focusing and complete a session. Check out [the Slack docs](https://api.slack.com) if you need help. The minimum required scope is `chat:write`." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请输入一个机器人或用户的OAuth令牌以及一个频道ID。在你开始或结束专注时，FocusFlow将向这个频道发送一条信息。如果你需要帮助，请访问[Slack文档](https://api.slack.com)。最少需要的权限范围是`chat:write`。"
+          }
+        }
+      }
     },
     "Enter a user OAuth token and an emoji to update your status when you are in a focus session. This will clear your status after the session ends. The minimum required scope is `users.profile:write`." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请输入一个用户OAuth令牌以及一个Emoji图标。当你在专注时，FocusFlow将设置你的状态。最少需要的权限范围是`user.profile:write`。"
+          }
+        }
+      }
     },
     "Focus!" : {
       "localizations" : {
@@ -193,7 +326,14 @@
       }
     },
     "Frost App Icon" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "冰霜App图标"
+          }
+        }
+      }
     },
     "Home" : {
       "localizations" : {
@@ -206,7 +346,14 @@
       }
     },
     "It won't happen again!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我保证不会再发生了！"
+          }
+        }
+      }
     },
     "Last session" : {
       "localizations" : {
@@ -219,10 +366,24 @@
       }
     },
     "Layer" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图层"
+          }
+        }
+      }
     },
     "Let you add an object to the Build tab. Build your own house, shop, city, anything you want!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“创造”标签页中添加一个物品。创造一所房子，一家商店，一座城市，什么都可以！"
+          }
+        }
+      }
     },
     "No sessions yet. Start focusing!" : {
       "localizations" : {
@@ -250,6 +411,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Objects: %1$lld of %2$lld total"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "物品：%1$lld / %2$lld"
           }
         }
       }
@@ -285,7 +452,14 @@
       }
     },
     "Post messages in Slack?" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送Slack信息？"
+          }
+        }
+      }
     },
     "Purchase!" : {
       "localizations" : {
@@ -308,19 +482,54 @@
       }
     },
     "Rainbow App Icon" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "彩虹App图标"
+          }
+        }
+      }
     },
     "Reached purchase limit" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已到达购买上限"
+          }
+        }
+      }
     },
     "Reset app icon" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置App图标"
+          }
+        }
+      }
     },
     "Resize" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩放"
+          }
+        }
+      }
     },
     "Send a test message" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送测试信息"
+          }
+        }
+      }
     },
     "Sessions" : {
       "localizations" : {
@@ -333,13 +542,34 @@
       }
     },
     "Settings" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置"
+          }
+        }
+      }
     },
     "Slack Notifications" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slack信息提醒"
+          }
+        }
+      }
     },
     "Slack Status Updates" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slack状态更新"
+          }
+        }
+      }
     },
     "Store" : {
       "localizations" : {
@@ -352,13 +582,34 @@
       }
     },
     "Success!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功！"
+          }
+        }
+      }
     },
     "Test status updating" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "测试更新状态"
+          }
+        }
+      }
     },
     "The test was completed successfully!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "测试成功！"
+          }
+        }
+      }
     },
     "Time" : {
       "localizations" : {
@@ -371,25 +622,74 @@
       }
     },
     "Unlock the Coral app icon, vibrant and warm like an ocean sunset!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解锁珊瑚App图标！"
+          }
+        }
+      }
     },
     "Unlock the Emerald app icon, fresh and lively like a lush forest!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解锁翡翠App图标！"
+          }
+        }
+      }
     },
     "Unlock the Frost app icon, cool and crisp like a winter morning!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解锁冰霜App图标！"
+          }
+        }
+      }
     },
     "Unlock the Rainbow app icon, joyful and diverse like a burst of color!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解锁彩虹App图标！"
+          }
+        }
+      }
     },
     "Unlock the Violet app icon, mysterious and regal like a twilight sky!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解锁紫韵App图标！"
+          }
+        }
+      }
     },
     "Update Slack status?" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新Slack状态？"
+          }
+        }
+      }
     },
     "Use this icon!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用这个图标！"
+          }
+        }
+      }
     },
     "Use this pass to take a 1 minute break on your phone in a focus session! Automatically applied when you leave the app." : {
       "localizations" : {
@@ -412,7 +712,14 @@
       }
     },
     "Violet App Icon" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "紫韵App图标"
+          }
+        }
+      }
     },
     "Warning!" : {
       "localizations" : {
@@ -435,10 +742,24 @@
       }
     },
     "xoxb-/xoxp- API Key" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xoxb-/xoxp- 令牌"
+          }
+        }
+      }
     },
     "xoxp- API Key" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xoxp- 令牌"
+          }
+        }
+      }
     },
     "You did it!" : {
       "localizations" : {
@@ -451,7 +772,14 @@
       }
     },
     "You failed a focus session, and everything you've built fell to ashes... Better luck next time :(" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你在专注中失败了，所以你创造的所有东西都消失了……下次加油 :("
+          }
+        }
+      }
     },
     "You failed..." : {
       "localizations" : {
@@ -498,7 +826,14 @@
       }
     },
     "You have failed..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你失败了……"
+          }
+        }
+      }
     },
     "You have left this page... You lost 50% of your coins." : {
       "localizations" : {
