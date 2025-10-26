@@ -1,5 +1,5 @@
 //
-//  SessionsScreen.swift
+//  SessionsListView.swift
 //  FocusFlow
 //
 //  Created by David Wang on 2025/10/4.
@@ -8,28 +8,27 @@
 import SwiftUI
 import SwiftData
 
-struct SessionsScreen: View {
+struct SessionsListView: View {
     @Query(sort: \FocusSession.startDate, order: .reverse) var sessions: [FocusSession]
     
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
-        NavigationStack {
-            List {
-                ForEach(sessions) { session in
-                    NavigationLink(value: session) {
-                        SessionSummary(session: session)
-                    }
-                }
-                .onDelete(perform: deleteIndices)
-                if sessions.isEmpty {
-                    Text("No sessions yet. Start focusing!")
+        List {
+            ForEach(sessions) { session in
+                NavigationLink(value: session) {
+                    SessionSummary(session: session)
                 }
             }
-            .navigationTitle("Sessions")
-            .navigationDestination(for: FocusSession.self) { session in
-                SessionDetailView(session: session)
+            .onDelete(perform: deleteIndices)
+            if sessions.isEmpty {
+                Text("No sessions yet. Start focusing!")
             }
+        }
+        .navigationTitle("Sessions")
+        .navigationBarTitleDisplayMode(.large)
+        .navigationDestination(for: FocusSession.self) { session in
+            SessionDetailView(session: session)
         }
     }
     
@@ -74,7 +73,7 @@ struct SessionDetailView: View {
 }
 
 #Preview {
-    SessionsScreen()
+    SessionsListView()
 }
 
 #Preview("Session detail") {

@@ -16,6 +16,15 @@ struct HomeScreen: View {
     @Environment(SlackService.self) var slackService
     
     var body: some View {
+        NavigationStack {
+            content
+                .navigationDestination(for: SessionsScreenDestination.self) { _ in
+                    SessionsListView()
+                }
+        }
+    }
+    
+    @ViewBuilder var content: some View {
         Spacer()
         Text("Focus!")
             .font(.largeTitle.bold())
@@ -32,9 +41,13 @@ struct HomeScreen: View {
         Text("Last session")
             .foregroundStyle(.secondary)
         VStack {
-            lastSessionView
-                .padding()
-                .background(.primary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+            NavigationLink(value: SessionsScreenDestination.value) {
+                lastSessionView
+            }
+            .tint(.primary)
+            .navigationLinkIndicatorVisibility(.visible)
+            .padding()
+            .background(.primary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
         }
         .padding(.horizontal)
         Spacer()
@@ -357,6 +370,10 @@ struct HomeScreen: View {
     /// Calculate the number of coins the user gains, given the current state.
     func calculateCoins() -> Int {
         return Int(((timerSetting - timerDistractedTime) / 60).rounded(.up))
+    }
+    
+    enum SessionsScreenDestination {
+        case value
     }
 }
 
