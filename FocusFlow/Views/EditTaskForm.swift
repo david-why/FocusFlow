@@ -15,9 +15,6 @@ struct EditTaskForm: View {
     
     @Environment(\.dismiss) private var dismiss
     
-    @State private var estimatedHours = 0
-    @State private var estimatedMinutes = 0
-    
     @State private var isPickingDuration = false
     
     var body: some View {
@@ -36,22 +33,23 @@ struct EditTaskForm: View {
                 Button {
                     isPickingDuration.toggle()
                 } label: {
-                    Text("\(estimatedHours)h \(estimatedMinutes)m")
+                    Text("\(estimatedHoursBinding.wrappedValue)h \(estimatedMinutesBinding.wrappedValue)m")
                 }
             }
             if isPickingDuration {
                 HStack {
-                    Picker("Hours", selection: $estimatedHours) {
+                    Picker("Hours", selection: estimatedHoursBinding) {
                         ForEach(0...23, id: \.self) { i in
                             Text("\(i)").tag(i)
                         }
                     }
                     Text("h")
-                    Picker("Minutes", selection: $estimatedMinutes) {
+                    Picker("Minutes", selection: estimatedMinutesBinding) {
                         ForEach(0...59, id: \.self) { i in
                             Text("\(i)").tag(i)
                         }
                     }
+                    Text("m")
                 }
                 .pickerStyle(.wheel)
             }
@@ -88,6 +86,32 @@ struct EditTaskForm: View {
             task.dueDate ?? Calendar.current.startOfDay(for: .now.addingTimeInterval(86400))
         } set: { value in
             task.dueDate = value
+        }
+    }
+    
+    var estimatedDuration: TimeInterval {
+        task.estimatedDuration ?? 0
+    }
+    
+    var estimatedHoursBinding: Binding<Int> {
+        Binding {
+            Int(estimatedDuration / 3600)
+        } set: { value in
+            task.estimatedDuration = estimatedDuration.truncatingRemainder(dividingBy: 3600) + TimeInterval(3600 * value)
+            if task.estimatedDuration == 0 {
+                task.estimatedDuration = nil
+            }
+        }
+    }
+    
+    var estimatedMinutesBinding: Binding<Int> {
+        Binding {
+            Int(estimatedDuration / 60) % 60
+        } set: { value in
+            task.estimatedDuration = TimeInterval(Int(estimatedDuration / 3600) * 3600) + TimeInterval(60 * value)
+            if task.estimatedDuration == 0 {
+                task.estimatedDuration = nil
+            }
         }
     }
     

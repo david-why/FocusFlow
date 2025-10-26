@@ -108,6 +108,7 @@ enum SchemaV2: VersionedSchema {
     
     @Model
     class ReminderTask {
+        var id: String = UUID().uuidString
         var name: String
         var dueDate: Date? // drop-dead due date
         var estimatedDuration: TimeInterval?

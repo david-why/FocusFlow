@@ -15,12 +15,58 @@ struct HomeScreen: View {
     @Environment(StoreService.self) var storeService
     @Environment(SlackService.self) var slackService
     
+    @Query var incompleteTasks: [ReminderTask]
+    
     var body: some View {
         NavigationStack {
             content
                 .navigationDestination(for: SessionsScreenDestination.self) { _ in
                     SessionsListView()
                 }
+        }
+        .onReceive(timer, perform: onTimerTick)
+        .alert("You did it!", isPresented: $isPresentingCongrats) {} message: {
+            Text("You focused for \(timerSetting.formatted(.timeInterval.allowedUnits(.minute).unitsStyle(.full)))! Enjoy your reward of \(lastCoinGain) coins!")
+        }
+        .onChange(of: scenePhase) { old, new in
+            print("Scene phase changed to \(new)")
+            if new == .background && timerRunning {
+                print("Failed due to scene changed to .background")
+                userDidFail()
+            }
+            if new == .active && isFailing {
+                penalizeUser()
+            }
+        }
+        .alert("You failed...", isPresented: $isPresentingFailed) {} message: {
+            Text("You have left this page... You lost 50% of your coins.")
+        }
+        .onDisappear {
+            print("onDisappear: \(timerRunning) \(scenePhase)")
+            if timerRunning && scenePhase == .active {
+                print("Failed due to timer running on onDisappear")
+                userDidFail()
+            }
+        }
+        .onAppear {
+            if isFailing {
+                penalizeUser()
+            }
+        }
+        .onChange(of: timerRunning) { old, new in
+            print("timerRunning changed to \(new)")
+            UIApplication.shared.isIdleTimerDisabled = new
+        }
+        .alert("Warning!", isPresented: $isPresentingHint) {
+            Button("OK") {
+                hintShown = true
+                startTimer()
+            }
+        } message: {
+            Text("Once you press OK, you must not leave this page (including closing this app AND switching to another tab)! Otherwise, your hard-earned coins are at risk...")
+        }
+        .alert("You were redeemed...", isPresented: $isPresentingSaved, presenting: savedPassName) { _ in } message: { name in
+            Text("You were distracted, but saved by a \(name). Don't let this happen again...")
         }
     }
     
@@ -51,50 +97,6 @@ struct HomeScreen: View {
         }
         .padding(.horizontal)
         Spacer()
-            .onReceive(timer, perform: onTimerTick)
-            .alert("You did it!", isPresented: $isPresentingCongrats) {} message: {
-                Text("You focused for \(timerSetting.formatted(.timeInterval.allowedUnits(.minute).unitsStyle(.full)))! Enjoy your reward of \(lastCoinGain) coins!")
-            }
-            .onChange(of: scenePhase) { old, new in
-                print("Scene phase changed to \(new)")
-                if new == .background && timerRunning {
-                    print("Failed due to scene changed to .background")
-                    userDidFail()
-                }
-                if new == .active && isFailing {
-                    penalizeUser()
-                }
-            }
-            .alert("You failed...", isPresented: $isPresentingFailed) {} message: {
-                Text("You have left this page... You lost 50% of your coins.")
-            }
-            .onDisappear {
-                print("onDisappear: \(timerRunning) \(scenePhase)")
-                if timerRunning && scenePhase == .active {
-                    print("Failed due to timer running on onDisappear")
-                    userDidFail()
-                }
-            }
-            .onAppear {
-                if isFailing {
-                    penalizeUser()
-                }
-            }
-            .onChange(of: timerRunning) { old, new in
-                print("timerRunning changed to \(new)")
-                UIApplication.shared.isIdleTimerDisabled = new
-            }
-            .alert("Warning!", isPresented: $isPresentingHint) {
-                Button("OK") {
-                    hintShown = true
-                    startTimer()
-                }
-            } message: {
-                Text("Once you press OK, you must not leave this page (including closing this app AND switching to another tab)! Otherwise, your hard-earned coins are at risk...")
-            }
-            .alert("You were redeemed...", isPresented: $isPresentingSaved, presenting: savedPassName) { _ in } message: { name in
-                Text("You were distracted, but saved by a \(name). Don't let this happen again...")
-            }
     }
     
     @AppStorage("home_hint_shown") var hintShown = false
@@ -113,6 +115,7 @@ struct HomeScreen: View {
     
     @State var now = Date.now
     
+    @AppStorage("working_task_id") var workingTaskID: String?
     @AppStorage("is_current_failing") var isFailing = false
     @AppStorage("current_fail_time") var failTime = Date.distantPast
     @AppStorage("current_fail_start_date") var failStartDate = Date.distantPast
@@ -174,11 +177,28 @@ struct HomeScreen: View {
                     .foregroundStyle(Color.accentColor)
                     .padding(.bottom, -1) // layout bug?
 
-                Text("\(Image(systemName: "flag.pattern.checkered")) \(progressAlarmTime)")
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 8)
-                    .foregroundStyle(.secondary)
-                    .background(Color.accentColor.opacity(0.2), in: Capsule())
+                HStack {
+                    Text("\(Image(systemName: "flag.pattern.checkered")) \(progressAlarmTime)")
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 8)
+                        .foregroundStyle(.secondary)
+                        .background(Color.accentColor.opacity(0.2), in: Capsule())
+                    
+                    Menu {
+                        Picker("label", selection: $workingTaskID) {
+                            Text("(None)").tag(Optional<String>.none)
+                            ForEach(incompleteTasks) { task in
+                                Text(task.name).tag(task.id)
+                            }
+                        }
+                    } label: {
+                        Text(Image(systemName: workingTask == nil ? "plus.circle" : "checkmark.circle.fill"))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 8)
+                            .background(Color.accentColor.opacity(0.2), in: Capsule())
+                    }
+                    .disabled(timerStartDate != nil)
+                }
             }
         }
     }
@@ -277,6 +297,7 @@ struct HomeScreen: View {
         self.timerStartDate = nil
         lastCoinGain = coinsWon
         isPresentingCongrats = true
+        workingTaskID = nil
         Task {
             try? await slackService.postMessage("FocusFlow: Completed focus session!\n* Actual focus time: \(actualTime.formatted(.timeInterval))\n* Coins earned: \(coinsWon)")
         }
@@ -330,6 +351,7 @@ struct HomeScreen: View {
         coins -= coinsLost // TODO: Extract to its own function
         isPresentingFailed = true
         hasFailedBuild = true
+        workingTaskID = nil
         Task {
             try? await slackService.postMessage("FocusFlow: Failed focus session...\n* Actual focus time: \(actualTime.formatted(.timeInterval))")
         }
@@ -364,12 +386,21 @@ struct HomeScreen: View {
     func increaseTimer() {
         timerSetting += 60
     }
+    
+    func chooseTask(_ task: ReminderTask) {
+        workingTaskID = task.id
+    }
 
     // MARK: - Utilities
     
     /// Calculate the number of coins the user gains, given the current state.
     func calculateCoins() -> Int {
         return Int(((timerSetting - timerDistractedTime) / 60).rounded(.up))
+    }
+    
+    var workingTask: ReminderTask? {
+        guard let workingTaskID else { return nil }
+        return incompleteTasks.first { $0.id == workingTaskID }
     }
     
     enum SessionsScreenDestination {
@@ -387,5 +418,6 @@ struct HomeScreen: View {
             let context = container.mainContext
             context.insert(FocusSession(startDate: Date(timeIntervalSince1970: 1759332600), duration: 3600, coins: 10, actualDuration: 3600))
             UserDefaults.standard.set(10, forKey: "coins")
+            context.insert(ReminderTask(name: "test task"))
         }
 }

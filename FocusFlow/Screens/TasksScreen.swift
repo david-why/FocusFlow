@@ -35,8 +35,7 @@ struct TasksScreen: View {
                 }
             }
             .navigationDestination(item: $addingTask) { task in
-                EditTaskForm(type: .new)
-                    .environment(task)
+                EditTaskForm(type: .new).environment(task)
             }
             .navigationDestination(for: ReminderTask.self) { task in
                 EditTaskForm().environment(task)
@@ -71,7 +70,7 @@ struct TaskSummary: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "circle")
+            Image(systemName: task.completed ? "inset.filled.circle" : "circle")
                 .opacity(0.7)
                 .onTapGesture(perform: toggleCompleted)
             VStack(alignment: .leading) {
