@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct TasksScreen: View {
-    @Query<ReminderTask>(filter: #Predicate { !$0.completed }) private var incompleteTasks: [ReminderTask]
+    @Query var allTasks: [ReminderTask]
     
     @Environment(\.modelContext) var modelContext
     
@@ -22,8 +22,11 @@ struct TasksScreen: View {
                     Text("Create a new task or set up Reminders sync in Settings!")
                 }
                 ForEach(incompleteTasks) { task in
-                    Text(task.name)
+                    NavigationLink(value: task) {
+                        TaskSummary().environment(task)
+                    }
                 }
+                .onDelete(perform: deleteIncompleteTasks)
             }
             .navigationTitle("Tasks")
             .toolbar {
@@ -34,6 +37,9 @@ struct TasksScreen: View {
             .navigationDestination(item: $addingTask) { task in
                 EditTaskForm(type: .new)
                     .environment(task)
+            }
+            .navigationDestination(for: ReminderTask.self) { task in
+                EditTaskForm().environment(task)
             }
             .onChange(of: addingTask) { old, new in
                 if let old, new == nil {
@@ -49,9 +55,56 @@ struct TasksScreen: View {
     func addTask() {
         addingTask = ReminderTask(name: "")
     }
+    
+    func deleteIncompleteTasks(at indices: IndexSet) {
+        let toDelete = indices.map { incompleteTasks[$0] }
+        toDelete.forEach(modelContext.delete)
+    }
+    
+    var incompleteTasks: [ReminderTask] {
+        allTasks.filter { !$0.completed }
+    }
+}
+
+struct TaskSummary: View {
+    @Environment(ReminderTask.self) var task
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "circle")
+                .opacity(0.7)
+                .onTapGesture(perform: toggleCompleted)
+            VStack(alignment: .leading) {
+                Text(task.name)
+                if let dueDate = task.dueDate {
+                    Text(Image(systemName: "calendar.badge.clock"))
+                        .foregroundStyle(.secondary)
+                    + Text(" \(dueDate.formatted(date: .numeric, time: .shortened))")
+                        .foregroundStyle(.secondary)
+                }
+                if let estimatedDuration = task.estimatedDuration {
+                    Text(Image(systemName: "clock"))
+                        .foregroundStyle(.secondary)
+                    + Text(" \(estimatedDuration.formatted(.timeInterval))")
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+    
+    func toggleCompleted() {
+        withAnimation {
+            task.completed.toggle()
+        }
+    }
 }
 
 #Preview {
+    let container = try! ModelContainer(for: ReminderTask.self, configurations: .init(isStoredInMemoryOnly: true))
     TasksScreen()
-        .modelContainer(for: ReminderTask.self, inMemory: true, isAutosaveEnabled: true)
+        .modelContainer(container)
+        .onAppear {
+            let context = container.mainContext
+            context.insert(ReminderTask(name: "english homework", dueDate: .now.addingTimeInterval(3600), estimatedDuration: 300))
+        }
 }
