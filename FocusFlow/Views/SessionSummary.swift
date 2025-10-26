@@ -11,15 +11,21 @@ struct SessionSummary: View {
     let session: FocusSession
     
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                durationField
-                Text("\(coinText) \(session.coins.formatted(.number))")
+        VStack(alignment: .leading) {
+            HStack {
+                VStack(alignment: .leading) {
+                    durationField
+                    Text("\(coinText) \(session.coins.formatted(.number))")
+                }
+                Spacer()
+                VStack(alignment: .trailing) {
+                    Text(session.startDate.formatted(date: .abbreviated, time: .omitted))
+                    Text(session.startDate.formatted(date: .omitted, time: .standard))
+                }
             }
-            Spacer()
-            VStack(alignment: .trailing) {
-                Text(session.startDate.formatted(date: .abbreviated, time: .omitted))
-                Text(session.startDate.formatted(date: .omitted, time: .standard))
+            if let task = session.task {
+                Text("\(Image(systemName: "calendar")) \(task.name)")
+                    .foregroundStyle(.secondary)
             }
         }
     }

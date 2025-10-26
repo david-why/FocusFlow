@@ -59,6 +59,12 @@ struct SessionDetailView: View {
                 LabeledContent("Coins") {
                     Text("\(coinText) \(session.coins)")
                 }
+                
+                if let task = session.task {
+                    LabeledContent("Task") {
+                        Text(task.name)
+                    }
+                }
             }
             
             Section {

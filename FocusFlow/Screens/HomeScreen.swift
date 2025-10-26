@@ -291,7 +291,7 @@ struct HomeScreen: View {
         guard let timerStartDate else { return }
         let coinsWon = calculateCoins()
         let actualTime = timerSetting - timerDistractedTime
-        let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: coinsWon, actualDuration: actualTime)
+        let session = FocusSession(startDate: timerStartDate, duration: timerSetting, coins: coinsWon, actualDuration: actualTime, task: workingTask)
         modelContext.insert(session) // TODO: Extract to its own function
         coins += coinsWon
         self.timerStartDate = nil
@@ -346,7 +346,7 @@ struct HomeScreen: View {
         }
         let coinsLost = (coins + 1) / 2
         let actualTime = failTime.timeIntervalSince(failStartDate) - timerDistractedTime
-        let session = FocusSession(startDate: failStartDate, duration: timerSetting, coins: -coinsLost, actualDuration: actualTime, failed: true)
+        let session = FocusSession(startDate: failStartDate, duration: timerSetting, coins: -coinsLost, actualDuration: actualTime, failed: true, task: workingTask)
         modelContext.insert(session)
         coins -= coinsLost // TODO: Extract to its own function
         isPresentingFailed = true
