@@ -35,3 +35,7 @@ extension FormatStyle where Self == TimeIntervalFormatStyle {
         TimeIntervalFormatStyle()
     }
 }
+
+extension String {
+    static let reminderListIDsKey = "reminder-list-ids"
+}
