@@ -49,6 +49,19 @@
       },
       "shouldTranslate" : false
     },
+    "%lld" : {
+
+    },
+    "%lldh %lldm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lldh %2$lldm"
+          }
+        }
+      }
+    },
     "🔴 Ellipse / Circle" : {
       "localizations" : {
         "zh-Hans" : {
@@ -108,6 +121,9 @@
           }
         }
       }
+    },
+    "Add" : {
+
     },
     "Add something..." : {
       "localizations" : {
@@ -225,6 +241,12 @@
         }
       }
     },
+    "Create a new task or set up Reminders sync in Settings!" : {
+
+    },
+    "Deadline" : {
+
+    },
     "Delete" : {
       "localizations" : {
         "zh-Hans" : {
@@ -265,6 +287,9 @@
         }
       }
     },
+    "Done" : {
+
+    },
     "Duration" : {
       "localizations" : {
         "zh-Hans" : {
@@ -274,6 +299,9 @@
           }
         }
       }
+    },
+    "Edit task" : {
+
     },
     "Emerald App Icon" : {
       "localizations" : {
@@ -315,6 +343,9 @@
         }
       }
     },
+    "Estimated duration" : {
+
+    },
     "Focus!" : {
       "localizations" : {
         "zh-Hans" : {
@@ -335,6 +366,12 @@
         }
       }
     },
+    "h" : {
+
+    },
+    "Has deadline" : {
+
+    },
     "Home" : {
       "localizations" : {
         "zh-Hans" : {
@@ -344,6 +381,9 @@
           }
         }
       }
+    },
+    "Hours" : {
+
     },
     "It won't happen again!" : {
       "localizations" : {
@@ -384,6 +424,15 @@
           }
         }
       }
+    },
+    "Minutes" : {
+
+    },
+    "Name" : {
+
+    },
+    "New task" : {
+
     },
     "No sessions yet. Start focusing!" : {
       "localizations" : {
@@ -590,6 +639,9 @@
           }
         }
       }
+    },
+    "Tasks" : {
+
     },
     "Test status updating" : {
       "localizations" : {

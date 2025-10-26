@@ -109,14 +109,18 @@ enum SchemaV2: VersionedSchema {
     @Model
     class ReminderTask {
         var name: String
-        var dueDate: Date // drop-dead due date
-        var estimatedDuration: TimeInterval
+        var dueDate: Date? // drop-dead due date
+        var estimatedDuration: TimeInterval?
+        var completed: Bool = false
+        var reminderIdentifier: String?
         @Relationship var sessions = [FocusSession]()
         
-        init(name: String, dueDate: Date, estimatedDuration: TimeInterval, sessions: [FocusSession] = []) {
+        init(name: String, dueDate: Date? = nil, estimatedDuration: TimeInterval? = nil, completed: Bool = false, reminderIdentifier: String? = nil, sessions: [FocusSession] = []) {
             self.name = name
             self.dueDate = dueDate
             self.estimatedDuration = estimatedDuration
+            self.completed = completed
+            self.reminderIdentifier = reminderIdentifier
             self.sessions = sessions
         }
     }

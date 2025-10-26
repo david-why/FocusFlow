@@ -10,6 +10,7 @@ import SwiftData
 
 enum ContentTab {
     case home
+    case tasks
     case store
     case build
     case settings
@@ -22,6 +23,9 @@ struct ContentView: View {
         TabView(selection: $tab) {
             Tab("Home", systemImage: "house", value: ContentTab.home) {
                 HomeScreen()
+            }
+            Tab("Tasks", systemImage: "list.bullet.clipboard", value: ContentTab.tasks) {
+                TasksScreen()
             }
             Tab("Store", systemImage: "cart", value: ContentTab.store) {
                 StoreScreen()

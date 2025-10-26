@@ -45,7 +45,7 @@ struct HomeScreen: View {
                 lastSessionView
             }
             .tint(.primary)
-            .navigationLinkIndicatorVisibility(.visible)
+            .navigationLinkIndicatorVisibility(lastSession == nil ? .hidden : .visible)
             .padding()
             .background(.primary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
         }
