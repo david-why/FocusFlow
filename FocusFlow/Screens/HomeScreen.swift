@@ -91,7 +91,7 @@ struct HomeScreen: View {
                 lastSessionView
             }
             .tint(.primary)
-            .navigationLinkIndicatorVisibility(lastSession == nil ? .hidden : .visible)
+//            .navigationLinkIndicatorVisibility(lastSession == nil ? .hidden : .visible) // iOS bug, can't use :(
             .padding()
             .background(.primary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
         }
@@ -370,7 +370,7 @@ struct HomeScreen: View {
             timerDistractedTime = 0
             timerStartDate = Date.now
             Task {
-                try? await slackService.postMessage("FocusFlow: Started focus session for \(timerSetting.formatted(.timeInterval))")
+                try? await slackService.postMessage("FocusFlow: Started focus session for \(timerSetting.formatted(.timeInterval))\(workingTask == nil ? "" : " on \(workingTask!.name)")")
             }
             Task {
                 try? await slackService.setStatus(text: "Focusing for \(timerSetting.formatted(.timeInterval)) | FocusFlow")

@@ -63,6 +63,7 @@ struct BuildScreen: View {
     }
     
     func checkHasFailed() {
+        guard !items.isEmpty else { return }
         if hasFailedBuild {
             Task {
                 isPresentingFailedAlert = true
