@@ -9,8 +9,13 @@ import SwiftUI
 
 struct SettingsScreen: View {
     @AppStorage("slack-api-key") var slackAPIKey: String = ""
+    @AppStorage("slack-should-message") var slackShouldMessage = false
     @AppStorage("slack-channel") var slackChannel: String = ""
     
+    @AppStorage("slack-should-status") var slackShouldStatus = false
+    @AppStorage("slack-status-api-key") var slackStatusAPIKey = ""
+    @AppStorage("slack-status-emoji") var slackStatusEmoji = ""
+
     @Environment(SlackService.self) var slackService
     
     @State var slackError: Error?
@@ -21,29 +26,54 @@ struct SettingsScreen: View {
         NavigationStack {
             Form {
                 Section {
-                    SecureField("xoxb-/xoxp- API Key", text: $slackAPIKey)
-                    TextField("Channel ID", text: $slackChannel)
-                    Button("Send a test message") {
-                        Task {
-                            await sendTestMessage()
+                    Toggle("Post messages in Slack?", isOn: $slackShouldMessage)
+                    
+                    if slackShouldMessage {
+                        SecureField("xoxb-/xoxp- API Key", text: $slackAPIKey)
+                        
+                        TextField("Channel ID", text: $slackChannel)
+                        Button("Send a test message") {
+                            Task {
+                                await sendTestMessage()
+                            }
                         }
+                        .disabled(slackAPIKey.isEmpty || slackChannel.isEmpty)
                     }
-                    .disabled(slackAPIKey.isEmpty || slackChannel.isEmpty)
                 } header: {
-                    Text("Slack Integration")
+                    Text("Slack Notifications")
                 } footer: {
                     Text("Enter a bot or user OAuth token and a channel to automatically post a message when you start focusing and complete a session. Check out [the Slack docs](https://api.slack.com) if you need help. The minimum required scope is `chat:write`.")
+                }
+                
+                Section {
+                    Toggle("Update Slack status?", isOn: $slackShouldStatus)
+                    if slackShouldStatus {
+                        SecureField("xoxp- API Key", text: $slackStatusAPIKey)
+                        TextField("Emoji (e.g. :pencil:)", text: $slackStatusEmoji)
+                        Button("Test status updating") {
+                            Task {
+                                await testUpdateStatus()
+                            }
+                        }
+                        .disabled(slackStatusAPIKey.isEmpty || slackStatusEmoji.isEmpty)
+                    }
+                } header: {
+                    Text("Slack Status Updates")
+                } footer: {
+                    Text("Enter a user OAuth token and an emoji to update your status when you are in a focus session. This will clear your status after the session ends. The minimum required scope is `users.profile:write`.")
                 }
             }
             .navigationTitle("Settings")
         }
+        .animation(.default, value: slackShouldMessage)
+        .animation(.default, value: slackShouldStatus)
         .alert("An error occurred", isPresented: $isShowingSlackError, presenting: slackError) { _ in
             Button("OK", role: .cancel) {}
         } message: { error in
             Text(verbatim: error.localizedDescription)
         }
         .alert("Success!", isPresented: $isShowingSlackSuccess) {} message: {
-            Text("A test message was successfully sent to the specified channel!")
+            Text("The test was completed successfully!")
         }
     }
     
@@ -56,7 +86,22 @@ struct SettingsScreen: View {
                 throw SettingsScreenError.slackAPIError(error: error)
             }
             isShowingSlackSuccess = true
-        } catch (let err) {
+        } catch let err {
+            slackError = err
+            isShowingSlackError = true
+        }
+    }
+    
+    func testUpdateStatus() async {
+        do {
+            guard let response = try await slackService.setStatus(text: "FocusFlow") else {
+                throw SettingsScreenError.slackNoResponse
+            }
+            if let error = response.error {
+                throw SettingsScreenError.slackAPIError(error: error)
+            }
+            isShowingSlackSuccess = true
+        } catch let err {
             slackError = err
             isShowingSlackError = true
         }

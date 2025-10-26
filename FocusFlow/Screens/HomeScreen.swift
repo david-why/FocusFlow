@@ -267,6 +267,9 @@ struct HomeScreen: View {
         Task {
             try? await slackService.postMessage("FocusFlow: Completed focus session!\n* Actual focus time: \(actualTime.formatted(.timeInterval))\n* Coins earned: \(coinsWon)")
         }
+        Task {
+            try? await slackService.clearStatus()
+        }
     }
     
     /// The user left the app.
@@ -317,6 +320,9 @@ struct HomeScreen: View {
         Task {
             try? await slackService.postMessage("FocusFlow: Failed focus session...\n* Actual focus time: \(actualTime.formatted(.timeInterval))")
         }
+        Task {
+            try? await slackService.clearStatus()
+        }
     }
     
     // MARK: - Actions
@@ -330,6 +336,9 @@ struct HomeScreen: View {
             timerStartDate = Date.now
             Task {
                 try? await slackService.postMessage("FocusFlow: Started focus session for \(timerSetting.formatted(.timeInterval))")
+            }
+            Task {
+                try? await slackService.setStatus(text: "Focusing for \(timerSetting.formatted(.timeInterval)) | FocusFlow")
             }
         }
     }

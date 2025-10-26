@@ -78,9 +78,6 @@
         }
       }
     },
-    "A test message was successfully sent to the specified channel!" : {
-
-    },
     "Actual duration" : {
       "localizations" : {
         "zh-Hans" : {
@@ -176,7 +173,13 @@
     "Emerald App Icon" : {
 
     },
+    "Emoji (e.g. :pencil:)" : {
+
+    },
     "Enter a bot or user OAuth token and a channel to automatically post a message when you start focusing and complete a session. Check out [the Slack docs](https://api.slack.com) if you need help. The minimum required scope is `chat:write`." : {
+
+    },
+    "Enter a user OAuth token and an emoji to update your status when you are in a focus session. This will clear your status after the session ends. The minimum required scope is `users.profile:write`." : {
 
     },
     "Focus!" : {
@@ -281,6 +284,9 @@
         }
       }
     },
+    "Post messages in Slack?" : {
+
+    },
     "Purchase!" : {
       "localizations" : {
         "zh-Hans" : {
@@ -329,7 +335,10 @@
     "Settings" : {
 
     },
-    "Slack Integration" : {
+    "Slack Notifications" : {
+
+    },
+    "Slack Status Updates" : {
 
     },
     "Store" : {
@@ -343,6 +352,12 @@
       }
     },
     "Success!" : {
+
+    },
+    "Test status updating" : {
+
+    },
+    "The test was completed successfully!" : {
 
     },
     "Time" : {
@@ -368,6 +383,9 @@
 
     },
     "Unlock the Violet app icon, mysterious and regal like a twilight sky!" : {
+
+    },
+    "Update Slack status?" : {
 
     },
     "Use this icon!" : {
@@ -417,6 +435,9 @@
       }
     },
     "xoxb-/xoxp- API Key" : {
+
+    },
+    "xoxp- API Key" : {
 
     },
     "You did it!" : {
