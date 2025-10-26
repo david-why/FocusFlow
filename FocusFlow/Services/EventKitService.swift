@@ -23,13 +23,17 @@ class EventKitService {
         willSet {
             if !accessGranted && newValue {
                 registerNotifications()
+                updateReminderLists()
+                Task {
+                    await updateReminders()
+                }
             }
         }
     }
-    
     private var observation: NSKeyValueObservation?
     
     private(set) var reminders: [AppleReminder] = []
+    private(set) var reminderLists: [AppleReminderList] = []
     
     init(eventStore: EKEventStore?, userDefaults: UserDefaults?) {
         self.eventStore = eventStore ?? EKEventStore()
@@ -60,6 +64,8 @@ class EventKitService {
     // MARK: - Helper functions
     
     private func updateReminders() async {
+        guard accessGranted else { return }
+        
         let calendars = eventStore.calendars(for: .reminder).filter { reminderListIDs.contains($0.calendarIdentifier) }
         guard !calendars.isEmpty else {
             Task { @MainActor in
@@ -84,6 +90,17 @@ class EventKitService {
         }
     }
     
+    private func updateReminderLists() {
+        guard accessGranted else { return }
+        
+        let ekCalendars = eventStore.calendars(for: .reminder)
+        
+        Task { @MainActor in
+            let appleReminderLists = ekCalendars.map(AppleReminderList.init)
+            reminderLists = appleReminderLists
+        }
+    }
+    
     private func registerNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(onStoreChanged), name: .EKEventStoreChanged, object: eventStore)
     }
@@ -98,6 +115,7 @@ class EventKitService {
         Task {
             await updateReminders()
         }
+        updateReminderLists()
     }
     
     private func onReminderListIDsChanged() {
@@ -125,8 +143,29 @@ class AppleReminder {
         reminder.title
     }
     
+    var notes: String? {
+        reminder.notes
+    }
+    
     var dueDate: Date? {
         guard let components = reminder.dueDateComponents else { return nil }
         return Calendar(identifier: .gregorian).date(from: components)
+    }
+}
+
+@Observable
+class AppleReminderList {
+    private let calendar: EKCalendar
+    
+    init(calendar: EKCalendar) {
+        self.calendar = calendar
+    }
+    
+    var title: String {
+        calendar.title
+    }
+    
+    var color: CGColor {
+        calendar.cgColor
     }
 }
