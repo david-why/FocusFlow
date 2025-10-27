@@ -10,7 +10,9 @@ import EventKit
 
 extension UserDefaults {
     @objc dynamic var reminderListIDs: [String] {
-        stringArray(forKey: .reminderListIDsKey) ?? []
+        // TODO: Use multiple
+        [string(forKey: .reminderListIDKey)].compactMap { $0 }
+//        stringArray(forKey: .reminderListIDsKey) ?? []
     }
 }
 
@@ -21,10 +23,12 @@ class EventKitService {
     
     private var accessGranted = false {
         willSet {
+            print("access granted willset \(accessGranted) \(newValue)")
             if !accessGranted && newValue {
-                registerNotifications()
-                updateReminderLists()
                 Task {
+                    eventStore.reset()
+                    registerNotifications()
+                    updateReminderLists()
                     await updateReminders()
                 }
             }
@@ -35,12 +39,13 @@ class EventKitService {
     private(set) var reminders: [AppleReminder] = []
     private(set) var reminderLists: [AppleReminderList] = []
     
-    init(eventStore: EKEventStore?, userDefaults: UserDefaults?) {
+    init(eventStore: EKEventStore? = nil, userDefaults: UserDefaults? = nil) {
         self.eventStore = eventStore ?? EKEventStore()
         self.userDefaults = userDefaults ?? UserDefaults.standard
         observation = self.userDefaults.observe(\.reminderListIDs) { _, _ in
             self.onReminderListIDsChanged()
         }
+        onStoreChanged(self.eventStore)
     }
     
     deinit {
@@ -48,11 +53,17 @@ class EventKitService {
     }
     
     func requestAccess() async -> Bool {
+        guard !accessGranted else { return true }
         do {
             let granted = try await eventStore.requestFullAccessToReminders()
-            Task { @MainActor in
-                accessGranted = granted
+            print("access granted: \(granted)")
+            if !accessGranted && granted {
+                eventStore.reset()
+                registerNotifications()
+                updateReminderLists()
+                await updateReminders()
             }
+            accessGranted = granted
             return granted
         } catch let err {
             print("Error requesting reminder access :(")
@@ -91,7 +102,11 @@ class EventKitService {
     }
     
     private func updateReminderLists() {
+        print("Updating reminder lists without access")
+        
         guard accessGranted else { return }
+        
+        print("Updating reminder lists")
         
         let ekCalendars = eventStore.calendars(for: .reminder)
         
@@ -139,6 +154,10 @@ class AppleReminder {
         self.reminder = reminder
     }
     
+    var isCompleted: Bool {
+        reminder.isCompleted
+    }
+    
     var title: String {
         reminder.title
     }
@@ -150,6 +169,12 @@ class AppleReminder {
     var dueDate: Date? {
         guard let components = reminder.dueDateComponents else { return nil }
         return Calendar(identifier: .gregorian).date(from: components)
+    }
+}
+
+extension AppleReminder: Identifiable {
+    var id: String {
+        reminder.calendarItemIdentifier
     }
 }
 
@@ -167,5 +192,11 @@ class AppleReminderList {
     
     var color: CGColor {
         calendar.cgColor
+    }
+}
+
+extension AppleReminderList: Identifiable {
+    var id: String {
+        calendar.calendarIdentifier
     }
 }

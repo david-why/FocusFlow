@@ -9,8 +9,10 @@ import SwiftUI
 import SwiftData
 
 struct TasksScreen: View {
-    @Query var allTasks: [ReminderTask]
+    @Query<ReminderTask>(sort: [.init(\.dueDate), .init(\.id)]) var allTasks: [ReminderTask]
     
+    @AppStorage("eventkit-tasks-synced") var tasksSyncing = false
+    @Environment(EventKitService.self) var eventKitService
     @Environment(\.modelContext) var modelContext
     
     @State var addingTask: ReminderTask?
@@ -46,6 +48,20 @@ struct TasksScreen: View {
                     if !old.name.isEmpty {
                         modelContext.insert(old)
                     }
+                }
+            }
+            .task {
+                // add new Reminders if sync enabled
+                guard tasksSyncing else { return }
+                guard await eventKitService.requestAccess() else { return }
+                let reminders = eventKitService.reminders
+                let existingReminderIDs = Set(allTasks.map(\.reminderIdentifier).compactMap(\.self))
+                let incompleteMissingReminders = reminders.filter { reminder in
+                    !reminder.isCompleted && !existingReminderIDs.contains(reminder.id)
+                }
+                for reminder in incompleteMissingReminders {
+                    let task = ReminderTask(name: reminder.title, dueDate: reminder.dueDate, reminderIdentifier: reminder.id)
+                    modelContext.insert(task)
                 }
             }
         }

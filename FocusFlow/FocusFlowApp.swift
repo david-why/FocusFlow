@@ -23,11 +23,20 @@ struct FocusFlowApp: App {
         }
     }
     
+    @AppStorage("eventkit-tasks-synced") var syncingTasks = false
+    @State var eventKitService = EventKitService()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(StoreService())
                 .environment(SlackService())
+                .environment(eventKitService)
+                .task {
+                    if syncingTasks {
+                        _ = await eventKitService.requestAccess()
+                    }
+                }
         }
         .modelContainer(container)
     }

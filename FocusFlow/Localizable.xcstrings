@@ -161,6 +161,9 @@
         }
       }
     },
+    "Automatically add new Reminders to the Tasks section." : {
+
+    },
     "Build" : {
       "localizations" : {
         "zh-Hans" : {
@@ -562,6 +565,12 @@
         }
       }
     },
+    "Reminder list" : {
+
+    },
+    "Reminders Sync" : {
+
+    },
     "Reset app icon" : {
       "localizations" : {
         "zh-Hans" : {
@@ -651,6 +660,9 @@
           }
         }
       }
+    },
+    "Sync with Reminders?" : {
+
     },
     "Task" : {
 

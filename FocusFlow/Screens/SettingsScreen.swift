@@ -15,6 +15,9 @@ struct SettingsScreen: View {
     @AppStorage("slack-should-status") var slackShouldStatus = false
     @AppStorage("slack-status-api-key") var slackStatusAPIKey = ""
     @AppStorage("slack-status-emoji") var slackStatusEmoji = ""
+    
+    @AppStorage("eventkit-tasks-synced") var tasksSynced = false
+    @AppStorage(.reminderListIDKey) var reminderListID: String?
 
     @Environment(SlackService.self) var slackService
     
@@ -61,6 +64,18 @@ struct SettingsScreen: View {
                     Text("Slack Status Updates")
                 } footer: {
                     Text("Enter a user OAuth token and an emoji to update your status when you are in a focus session. This will clear your status after the session ends. The minimum required scope is `users.profile:write`.")
+                }
+                
+                Section {
+                    Toggle("Sync with Reminders?", isOn: $tasksSynced)
+                    if tasksSynced {
+                        ReminderListPicker(value: $reminderListID)
+                            .pickerStyle(.menu)
+                    }
+                } header: {
+                    Text("Reminders Sync")
+                } footer: {
+                    Text("Automatically add new Reminders to the Tasks section.")
                 }
             }
             .navigationTitle("Settings")
