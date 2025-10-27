@@ -18,14 +18,14 @@ You can start a focus timer, which will fail if you leave the page. If you finis
 - [x] Gain coins for focusing
 - [x] Store
   - [x] Skip passes
-  - [ ] App icons
+  - [x] App icons
   - [ ] App themes
   - [ ] Game tickets?
   - [ ] Gambling?
   - [ ] In-app AI credits?
   - [ ] IRL things?
-- [ ] Tasks
-  - [ ] Reminder integration
+- [x] Tasks
+  - [x] Reminder integration
 - [ ] Coin multipliers
   - [ ] Random daily bonus
   - [ ] Task completion before deadline
