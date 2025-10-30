@@ -15,7 +15,7 @@ struct HomeScreen: View {
     @Environment(StoreService.self) var storeService
     @Environment(SlackService.self) var slackService
     
-    @Query var incompleteTasks: [ReminderTask]
+    @Query<ReminderTask>(filter: #Predicate { !$0.completed }) var incompleteTasks: [ReminderTask]
     
     var body: some View {
         NavigationStack {
